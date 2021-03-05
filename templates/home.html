@@ -22,6 +22,7 @@
 {% if user.is_authenticated %}
     <p><a href="{% url 'account' %}">Личный кабинет</a></p>
     <p><a href="{% url 'all_rooms' %}">Все комнаты</a></p>
+    <p><a href="{% url 'all_reserves' %}">Мои резервы</a></p>
     <p><a href="{% url 'logout' %}">Выход</a></p>
 {% endif %}
 <h3>Найдем номер под ваши пожелания</h3>

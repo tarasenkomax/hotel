@@ -27,6 +27,40 @@ def detail_room(request, number):
     return render(request, 'rooms/detail_room.html', {'room': room, })
 
 
+def all_reserves(request):
+    """ Вывод всех броней пользователя"""
+    reserve_list = Reserve.objects.filter(client=request.user)
+    paginator = Paginator(reserve_list, 3)  # 3 поста на каждой странице
+    page = request.GET.get('page')
+    try:
+        reserves = paginator.page(page)
+    except PageNotAnInteger:
+        # Если страница не является целым числом, поставим первую страницу
+        reserves = paginator.page(1)
+    except EmptyPage:
+        # Если страница больше максимальной, доставить последнюю страницу результатов
+        reserves = paginator.page(paginator.num_pages)
+    return render(request, 'rooms/all_reserves.html', {'page': page, 'reserves': reserves, })
+
+
+def pay(request, number):
+    """ Оплата брони (заглушка)"""
+    if request.method == 'GET':
+        full_price = request.GET['full_price']
+        reserve = Reserve()
+        reserve.day_in = request.GET['day_in']
+        reserve.day_out = request.GET['day_out']
+        reserve.room = get_object_or_404(Room, number=number)
+        reserve.number_of_guests = request.GET['number_of_guests']
+        reserve.client = request.user
+        if check_availability(reserve.room, reserve.day_in, reserve.day_out):
+            reserve.save()
+            return render(request, 'rooms/pay.html', {'full_price': full_price, })
+        else:
+            message = 'Ошибка оплаты.'
+            return render(request, 'rooms/pay.html', {'message': message, })
+
+
 def reserve_room(request, number):
     """ Бронирование коматы  """
     room = get_object_or_404(Room, number=number)

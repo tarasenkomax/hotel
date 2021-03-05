@@ -79,6 +79,7 @@ class Reserve(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, verbose_name='Комната')
     day_in = models.DateField(verbose_name='Дата заезда', null=False)
     day_out = models.DateField(verbose_name='Дата выезда', null=False)
+    number_of_guests = models.IntegerField(null=True, verbose_name='Количество гостей')
 
     def __str__(self):
         return str(self.room)

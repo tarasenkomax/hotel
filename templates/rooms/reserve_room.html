@@ -29,7 +29,7 @@
 <a>Гости: {{ number_of_guests }}</a><br>
 <a>{{ room.price }} ₽  x {{ days }} суток = {{ full_price }} ₽</a><br>
 
-<a href="#">Забронировать</a><br><br>
+<a href="{% url 'pay' room.number %}{% urlparams full_price=full_price day_in=day_in day_out=day_out number_of_guests=number_of_guests %}">Забронировать</a><br><br>
 <p><a href="{% url 'list_free_rooms' %}{% urlparams page=page.previous_page_number day_in=day_in day_out=day_out number_of_guests=number_of_guests%}">Назад</a></p>
 <p><a href="{% url 'home' %}">На главную</a></p>
 </body>

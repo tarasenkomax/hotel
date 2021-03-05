@@ -39,7 +39,7 @@ class GalleryAdmin(admin.ModelAdmin):
 
 class ReserveAdmin(admin.ModelAdmin):
     """ Резервы комнат """
-    list_display = ('id', 'room', 'client', 'day_in', 'day_out',)
+    list_display = ('id', 'room', 'client', 'day_in', 'day_out', 'number_of_guests')
     list_display_links = ('room',)
     list_filter = ('room',)
 

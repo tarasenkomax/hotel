@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список резервов</title>
+</head>
+<body>
+<h3>Все ваши резервы </h3>
+{% block content %}
+    {% for reserve in  reserves %}
+        <a>Идентификатор: {{ reserve.id }}</a><br>
+        <a>Комната: {{ reserve.room }}</a><br>
+        <a>Прибытие: {{ reserve.day_in }}</a><br>
+        <a>Выезд: {{ reserve.day_out }}</a><br>
+        <a>Количество гостей: {{ reserve.number_of_guests }}</a><br>
+        <br>
+    {% endfor %}
+    {% include "../pagination.html" with page=reserves %}
+{% endblock %}
+<p><a href="{% url 'home' %}">На главную</a></p>
+</body>
+</html>
