@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали комнаты</title>
+</head>
+<body>
+<h1>Номер: {{ room.number }}</h1>
+<h3><a>Цена: {{ room.price }}</a></h3>
+<h3><a>Тип: {{ room.type }}</a></h3>
+<h3><a>Количество гостей: {{ room.number_of_guests }}</a></h3>
+{% if room.photos_of_room.slider_photo1 %}
+    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>
+{% endif %}
+{% if room.photos_of_room.slider_photo2 %}
+    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo2.url }}"></a>
+{% endif %}
+{% if room.photos_of_room.slider_photo3 %}
+    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo3.url }}"></a>
+{% endif %}
+{% if room.photos_of_room.slider_photo4 %}
+    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo4.url }}"></a>
+{% endif %}
+<p><a href="{% url 'all_rooms' %}">Назад</a></p>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Диплом</title>
+</head>
+<body>
+{% if user.surname and user.name %}
+    <h2>Пользователь: {{ user.surname }} {{ user.name }}</h2>
+{% else %}
+<h1>Пользователь: {{ user }}</h1>
+{% endif %}
+{% if user.is_staff%}
+    <p><a href="{% url 'admin:index' %}">Админка</a></p>
+{% endif %}
+
+
+{% if not user.is_authenticated %}
+    <p><a href="{% url 'login' %}">Войти</a></p>
+    <p><a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+{% endif %}
+{% if user.is_authenticated %}
+    <p><a href="{% url 'account' %}">Личный кабинет</a></p>
+    <p><a href="{% url 'all_rooms' %}">Все комнаты</a></p>
+    <p><a href="{% url 'logout' %}">Выход</a></p>
+{% endif %}
+<h3>Найдем номер под ваши пожелания</h3>
+{% if error %}
+    <font color="#ff300b">{{ error }}</font>
+    <br/>
+    <br/>
+{% endif %}
+<form method="post" >
+    {% csrf_token %}
+    Прибытие:
+    <br/>
+    <input type="date" name="day_in"/>
+    <br/>
+    Выезд:
+    <br/>
+    <input type="date" name="day_out"/>
+    <br/>
+    Гости:
+    <br/>
+    <input type="number" name="number_of_guests"/>
+    <br/>
+    <br/>
+    <input type="submit" value="Подобрать номер" />
+</form>
+</body>
+</html>

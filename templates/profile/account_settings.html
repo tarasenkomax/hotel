@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройки</title>
+</head>
+<body>
+{% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+{% if user.profile.photo %}
+    <img src="{{ user.profile.photo.url }}" alt="avatar">
+{% endif %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+<p><a href="{% url 'password_change' %}">Изменить пароль</a></p>
+<p><a href="{% url 'account' %}">Назад</a></p>
+</body>
+</html>

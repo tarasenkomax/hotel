@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Все комнаты</title>
+</head>
+<body>
+<h3>Комнаты</h3>
+{% block content %}
+{% for room in  rooms %}
+    <a href="{% url 'detail_room' room.number %}">Номер: {{ room.number }}</a><br>
+    <a>Тип: {{ room.type }}</a><br>
+    <a>Цена: {{ room.price }}</a><br>
+    <a>Количество гостей: {{ room.number_of_guests }}</a><br>
+    <a>Фото для слайдера:</a><br>
+    {% if room.photos_of_room.slider_photo1 %}
+        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>
+    {% endif %}
+    {% if room.photos_of_room.slider_photo2 %}
+    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo2.url }}"></a>
+    {% endif %}
+    {% if room.photos_of_room.slider_photo3 %}
+        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo3.url }}"></a>
+    {% endif %}
+    {% if room.photos_of_room.slider_photo4 %}
+        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo4.url }}"></a>
+    {% endif %}
+    <br>
+{% endfor %}
+    {% include "../pagination.html" with page=rooms %}
+{% endblock %}
+<p><a href="{% url 'home' %}">На главную</a></p>
+</body>
+</html>

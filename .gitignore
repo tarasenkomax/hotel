@@ -1,0 +1,14 @@
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+/media
+/static
+venv/
+.idea/
+Account/migrations/
+Account/__pycache__/
+Account/static/
+Room/migrations/
+Room/__pycache__/

@@ -1,0 +1,23 @@
+{% load urlparams %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Свободные номера</title>
+</head>
+<body>
+<h3>Номера, которые мы для вас подобрали</h3>
+{% block content %}
+{% for room in  rooms %}
+    <a>Номер: {{ room.number }}</a><br>
+    <a>Тип: {{ room.type }}</a><br>
+    <a>Цена: {{ room.price }}</a><br>
+    <a>Количество гостей: {{ room.number_of_guests }}</a><br>
+    <a href="{% url 'reserve_room' room.number %}{% urlparams day_in=day_in day_out=day_out number_of_guests=number_of_guests%}">Забронировать</a><br><br>
+{% endfor %}
+    {% include "../pagination_for_list_free_rooms.html" with page=rooms %}
+
+{% endblock %}
+<p><a href="{% url 'home' %}">На главную</a></p>
+</body>
+</html>
