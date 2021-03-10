@@ -1,8 +1,8 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from Room.models import Room, Reserve
-from Room.reserve_functions import check_availability, number_of_days
+from Room.reserve_functions import check_availability, number_of_days, dates_of_user
 
 
 def all_rooms(request):
@@ -27,9 +27,14 @@ def detail_room(request, number):
     return render(request, 'rooms/detail_room.html', {'room': room, })
 
 
+def help_page(request):
+    """ Информация по отдельной комнате """
+    return render(request, 'rooms/help_page.html', )
+
+
 def all_reserves(request):
     """ Вывод всех броней пользователя"""
-    reserve_list = Reserve.objects.filter(client=request.user)
+    reserve_list = Reserve.objects.filter(client=request.user).order_by('-id')
     paginator = Paginator(reserve_list, 3)  # 3 поста на каждой странице
     page = request.GET.get('page')
     try:
@@ -55,10 +60,10 @@ def pay(request, number):
         reserve.client = request.user
         if check_availability(reserve.room, reserve.day_in, reserve.day_out):
             reserve.save()
-            return render(request, 'rooms/pay.html', {'full_price': full_price, })
+            message = 'Номер успешно забронирован. Информацию о брони вы можете посмотреть в разделе "Мои резервы".'
         else:
             message = 'Ошибка оплаты.'
-            return render(request, 'rooms/pay.html', {'message': message, })
+        return render(request, 'rooms/pay.html', {'message': message, })
 
 
 def reserve_room(request, number):
@@ -87,16 +92,19 @@ def list_free_rooms(request):
         for room in filtered_rooms:
             if check_availability(room, day_in, day_out):
                 free_rooms.append(room)
-        paginator = Paginator(free_rooms, 3)  # 3 поста на каждой странице
-        page = request.GET.get('page')
-        try:
-            rooms = paginator.page(page)
-        except PageNotAnInteger:
-            # Если страница не является целым числом, поставим первую страницу
-            rooms = paginator.page(1)
-        except EmptyPage:
-            # Если страница больше максимальной, доставить последнюю страницу результатов
-            rooms = paginator.page(paginator.num_pages)
-        return render(request, 'rooms/list_free_rooms.html',
-                      {'page': page, 'rooms': rooms, 'day_in': day_in, 'day_out': day_out,
-                       'number_of_guests': number_of_guests})
+        if dates_of_user(request.user, day_in, day_out):
+            paginator = Paginator(free_rooms, 3)  # 3 поста на каждой странице
+            page = request.GET.get('page')
+            try:
+                rooms = paginator.page(page)
+            except PageNotAnInteger:
+                # Если страница не является целым числом, поставим первую страницу
+                rooms = paginator.page(1)
+            except EmptyPage:
+                # Если страница больше максимальной, доставить последнюю страницу результатов
+                rooms = paginator.page(paginator.num_pages)
+            return render(request, 'rooms/list_free_rooms.html',
+                          {'page': page, 'rooms': rooms, 'day_in': day_in, 'day_out': day_out,
+                           'number_of_guests': number_of_guests})
+        else:
+            return redirect('help_page')

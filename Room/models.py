@@ -40,8 +40,6 @@ class Room(models.Model):
     price = models.IntegerField(null=True, verbose_name='Цена', help_text='указывать в рублях')
     number_of_guests = models.IntegerField(null=True, verbose_name='Количество гостей')
 
-    # reserve
-
     def __str__(self):
         return str(self.number)
 

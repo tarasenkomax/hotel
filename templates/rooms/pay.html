@@ -6,11 +6,7 @@
 </head>
 <body>
 <h3>Страница для интеграции с платежной системой</h3><br>
-{% if not message %}
-    К оплате: {{ full_price }} ₽
-{% else %}
 {{ message }}
-{% endif %}
 <p><a href="{% url 'home' %}">На главную</a></p>
 </body>
 </html>

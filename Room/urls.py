@@ -13,6 +13,7 @@ urlpatterns = [
     path('all_reserves', views.all_reserves, name='all_reserves'),
     path('pay/<int:number>', views.pay, name='pay'),
 
+    path('help_page', views.help_page, name='help_page'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,7 @@
         <a>Прибытие: {{ reserve.day_in }}</a><br>
         <a>Выезд: {{ reserve.day_out }}</a><br>
         <a>Количество гостей: {{ reserve.number_of_guests }}</a><br>
+        <a href="#">Оставить отзыв</a><br>
         <br>
     {% endfor %}
     {% include "../pagination.html" with page=reserves %}

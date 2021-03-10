@@ -5,10 +5,10 @@
     <title>Диплом</title>
 </head>
 <body>
-{% if user.surname and user.name %}
+{% if  user.is_authenticated %}
     <h2>Пользователь: {{ user.surname }} {{ user.name }}</h2>
 {% else %}
-<h1>Пользователь: {{ user }}</h1>
+<h1>Добро пожаловать</h1>
 {% endif %}
 {% if user.is_staff%}
     <p><a href="{% url 'admin:index' %}">Админка</a></p>

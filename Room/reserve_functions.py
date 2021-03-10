@@ -1,4 +1,5 @@
 import datetime as DT
+
 from Room.models import Reserve
 
 
@@ -23,3 +24,24 @@ def number_of_days(day_in, day_out):
     day_out_ = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
     days = day_out_ - day_in_
     return days.days
+
+
+def dates_of_user(instance, day_in, day_out):
+    """ Проверка на наличие у пользователя существующих резервов на эти даты"""
+    user = instance
+    day_in = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
+    day_out = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
+    reserve_list = Reserve.objects.filter(client=user)
+    counter = 0
+    if len(reserve_list) == 0:
+        return True
+    else:
+        for reserve in reserve_list:
+            if reserve.day_in >= day_out or reserve.day_out <= day_in:
+                counter += 0
+            else:
+                counter += 1
+    if counter <= 0:
+        return True
+    else:
+        return False
