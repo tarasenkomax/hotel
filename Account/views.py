@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
-
+import datetime as DT
 from Account.forms import CustomUserCreationForm, UserSettingsForm
 from Account.models import CustomUser
 
@@ -20,7 +20,9 @@ def home(request):
             if day_in > day_out:
                 return render(request, 'home.html', {'error': 'Выезд не может быть раньше заезда'})
             if day_in == day_out:
-                return render(request, 'home.html', {'error': 'Укажите корректные даты '})
+                return render(request, 'home.html', {'error': 'Укажите корректные даты'})
+            if DT.datetime.strptime(day_in, '%Y-%m-%d').date() <= DT.datetime.now().date():
+                return render(request, 'home.html', {'error': 'Нельзя бронировать на прошедшие дни'})
             else:
                 return redirect('/list_free_rooms?day_in={0}&day_out={1}&number_of_guests={2}'.format(day_in, day_out,
                                                                                                       number_of_guests))

@@ -1,6 +1,6 @@
 import datetime as DT
 
-from Room.models import Reserve
+from Room.models import Reserve, Review
 
 
 def check_availability(room, day_in, day_out):
@@ -45,3 +45,16 @@ def dates_of_user(instance, day_in, day_out):
         return True
     else:
         return False
+
+
+def average_rating(room):
+    """ Средний рейтинг """
+    review_list = Review.objects.filter(room=room)
+    if review_list:
+        rating_list = []
+        for review in review_list:
+            rating_list.append(review.rating)
+        average = sum(rating_list) / len(rating_list)
+        return average
+    else:
+        return 'У номера еще нет отзывов'

@@ -13,8 +13,6 @@
 {% if user.is_staff%}
     <p><a href="{% url 'admin:index' %}">Админка</a></p>
 {% endif %}
-
-
 {% if not user.is_authenticated %}
     <p><a href="{% url 'login' %}">Войти</a></p>
     <p><a href="{% url 'signup' %}">Зарегистрироваться</a></p>

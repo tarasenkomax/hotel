@@ -1,3 +1,4 @@
+{% load urlparams %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,10 +9,11 @@
 <h3>Комнаты</h3>
 {% block content %}
 {% for room in  rooms %}
-    <a href="{% url 'detail_room' room.number %}">Номер: {{ room.number }}</a><br>
+    <a href="{% url 'detail_room' room.number %}{% urlparams page=page%}">Номер: {{ room.number }}</a><br>
     <a>Тип: {{ room.type }}</a><br>
     <a>Цена: {{ room.price }}</a><br>
     <a>Количество гостей: {{ room.number_of_guests }}</a><br>
+    <a>Средний рейтинг: {{ rating }}</a><br>
     <a>Фото для слайдера:</a><br>
     {% if room.photos_of_room.slider_photo1 %}
         <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>

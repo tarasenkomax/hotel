@@ -23,6 +23,7 @@ class Hotel(models.Model):
 class TypeRoom(models.Model):
     """ Модель типа комнаты """
     nomination = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Наименование')
+    description = models.CharField(max_length=300, blank=True, null=False, verbose_name='Описание')
 
     def __str__(self):
         return self.nomination
@@ -34,7 +35,7 @@ class TypeRoom(models.Model):
 
 class Room(models.Model):
     """ Модель Комнаты """
-    hotel = models.ForeignKey(Hotel, null=False, on_delete=models.PROTECT, verbose_name='Отель')
+    hotel = models.ForeignKey(Hotel, null=False, on_delete=models.CASCADE, verbose_name='Отель')
     number = models.IntegerField(null=False, unique=True, verbose_name='Номер')
     type = models.ForeignKey(TypeRoom, on_delete=models.PROTECT, null=True, verbose_name='Тип')
     price = models.IntegerField(null=True, verbose_name='Цена', help_text='указывать в рублях')
@@ -80,8 +81,23 @@ class Reserve(models.Model):
     number_of_guests = models.IntegerField(null=True, verbose_name='Количество гостей')
 
     def __str__(self):
-        return str(self.room)
+        return str(self.id)
 
     class Meta:
         verbose_name_plural = 'Резервы комнат'
         verbose_name = 'Резерв комнаты'
+
+
+class Review(models.Model):
+    room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE, verbose_name='Комната')
+    rating = models.IntegerField(blank=True, null=True, verbose_name='Рейтинг')
+    body = models.TextField(blank=True, null=True, verbose_name='Отзыв')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Автор')
+    reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE,null=True, verbose_name='Резерв ID')
+
+    def __str__(self):
+        return str(self.room)
+
+    class Meta:
+        verbose_name_plural = 'Отзывы комнат'
+        verbose_name = 'Отзыв комнаты'

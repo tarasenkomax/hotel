@@ -1,8 +1,11 @@
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
-from Room.models import Room, Reserve
-from Room.reserve_functions import check_availability, number_of_days, dates_of_user
+
+from Room.forms import AddReview
+from Room.models import Room, Reserve, Review
+from Room.reserve_functions import check_availability, number_of_days, dates_of_user, average_rating
 
 
 def all_rooms(request):
@@ -24,7 +27,11 @@ def all_rooms(request):
 def detail_room(request, number):
     """ Информация по отдельной комнате """
     room = get_object_or_404(Room, number=number)
-    return render(request, 'rooms/detail_room.html', {'room': room, })
+    review_list = Review.objects.filter(room=room)
+    page = request.GET.get('page')
+    rating = average_rating(room)
+    return render(request, 'rooms/detail_room.html',
+                  {'room': room, 'page': page, 'review_list': review_list, 'rating': rating})
 
 
 def help_page(request):
@@ -34,7 +41,7 @@ def help_page(request):
 
 def all_reserves(request):
     """ Вывод всех броней пользователя"""
-    reserve_list = Reserve.objects.filter(client=request.user).order_by('-id')
+    reserve_list = Reserve.objects.filter(client=request.user).order_by('id')
     paginator = Paginator(reserve_list, 3)  # 3 поста на каждой странице
     page = request.GET.get('page')
     try:
@@ -69,6 +76,8 @@ def pay(request, number):
 def reserve_room(request, number):
     """ Бронирование коматы  """
     room = get_object_or_404(Room, number=number)
+    review_list = Review.objects.filter(room=room)
+    rating = average_rating(room)
     if request.method == 'GET':
         day_in = request.GET['day_in']
         day_out = request.GET['day_out']
@@ -78,7 +87,7 @@ def reserve_room(request, number):
 
     return render(request, 'rooms/reserve_room.html', {'room': room, 'day_in': day_in, 'day_out': day_out,
                                                        'number_of_guests': number_of_guests, 'full_price': full_price,
-                                                       'days': days})
+                                                       'days': days, 'review_list': review_list, 'rating': rating})
 
 
 def list_free_rooms(request):
@@ -87,7 +96,7 @@ def list_free_rooms(request):
         day_in = request.GET['day_in']
         day_out = request.GET['day_out']
         number_of_guests = request.GET['number_of_guests']
-        filtered_rooms = Room.objects.filter(number_of_guests__gte=int(number_of_guests))
+        filtered_rooms = Room.objects.filter(number_of_guests__gte=int(number_of_guests)).order_by('number')
         free_rooms = []
         for room in filtered_rooms:
             if check_availability(room, day_in, day_out):
@@ -108,3 +117,22 @@ def list_free_rooms(request):
                            'number_of_guests': number_of_guests})
         else:
             return redirect('help_page')
+
+
+def add_review(request, pk):
+    form = AddReview()
+    reserve = Reserve.objects.get(pk=pk)
+    if not reserve.client == request.user:
+        raise Http404
+    if request.method == 'POST':
+        form = AddReview(request.POST)
+        if form.is_valid():
+            review = Review()
+            review.room = reserve.room
+            review.author = request.user
+            review.reserve = reserve
+            review.rating = form.cleaned_data['rating']
+            review.body = form.cleaned_data['body']
+            review.save()
+            return redirect('all_reserves')
+    return render(request, 'rooms/add_review.html', {'reserve': reserve, 'form': form})
