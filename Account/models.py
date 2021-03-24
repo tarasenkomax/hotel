@@ -43,8 +43,6 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-
-
 class StatusClient(models.Model):
     """ Модель статуса клиента """
     nomination = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Наименование')
@@ -68,6 +66,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(verbose_name='Почта', max_length=255, unique=True, )
     name = models.CharField(max_length=50, blank=True, null=True, verbose_name='Имя')
     surname = models.CharField(max_length=50, blank=True, null=True, verbose_name='Фамилия')
+    patronymic = models.CharField(max_length=50, blank=True, null=True, verbose_name='Отчество')
     phone = models.CharField(max_length=22, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
@@ -88,5 +87,3 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
-
-

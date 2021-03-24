@@ -12,7 +12,7 @@ class HotelAdmin(admin.ModelAdmin):
 
 class ReviewAdmin(admin.ModelAdmin):
     """ Отзывы """
-    list_display = ('id', 'reserve', 'author', 'rating', 'body')
+    list_display = ('id', 'reserve', 'author', 'rating', 'body', 'pub_date')
     list_display_links = ('id',)
     list_filter = ('reserve', 'rating',)
 

@@ -11,7 +11,7 @@
 {% if user.profile.photo %}
     <img src="{{ user.profile.photo.url }}" alt="avatar">
 {% endif %}
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Сохранить</button>

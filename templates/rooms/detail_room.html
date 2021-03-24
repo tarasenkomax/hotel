@@ -28,6 +28,7 @@
 <h4>Сведения о номере</h4>
 <a>{{ room.type.description}}</a><br>
 <h4>Отзывы посетителей номера</h4>
+{{ num_of_review }} отзывов<br><br>
 {% if review_list %}
     {% for review in review_list %}
             {% if  review.author.photo %}
@@ -37,7 +38,8 @@
             {% endif %}
         {{ review.author.name }} {{ review.author.surname }} <br>
         {{ review.body }}<br>
-        Рейтинг: {{ review.rating }}<br><br>
+        Рейтинг: {{ review.rating }}<br>
+        Дата публикации: {{ review.pub_date }}<br><br>
     {% endfor %}
     {% else %}
     Пока нет отзывов

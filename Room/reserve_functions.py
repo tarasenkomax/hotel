@@ -1,5 +1,5 @@
 import datetime as DT
-
+from django.core.mail import send_mail
 from Room.models import Reserve, Review
 
 
@@ -58,3 +58,15 @@ def average_rating(room):
         return average
     else:
         return 'У номера еще нет отзывов'
+
+
+def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipient):
+    """ Отправка письма о подтверждении брони """
+    email_theme = 'Диполмная работа'
+    email_text = 'Здравствуйте, {} {} , ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
+                 '------\n Комната: {}\n Прибытие: {}.\n Выезд: {}.\n Количество гостей: {}\n Желаем вам ' \
+                 'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, patronymic, room,
+                                                                                          day_in, day_out,
+                                                                                          number_of_guests)
+    send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],
+              fail_silently=False)

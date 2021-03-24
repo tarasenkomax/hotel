@@ -89,11 +89,13 @@ class Reserve(models.Model):
 
 
 class Review(models.Model):
+    """ Отзыв """
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE, verbose_name='Комната')
     rating = models.IntegerField(blank=True, null=True, verbose_name='Рейтинг')
     body = models.TextField(blank=True, null=True, verbose_name='Отзыв')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Автор')
-    reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE,null=True, verbose_name='Резерв ID')
+    reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE, null=True, verbose_name='Резерв ID')
+    pub_date = models.DateField(null=True, verbose_name='Дата публикации')
 
     def __str__(self):
         return str(self.room)
