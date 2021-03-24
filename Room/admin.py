@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
-from Room.models import Hotel, Room, Gallery, Reserve, TypeRoom, Review
+from Room.models import Hotel, Room, Gallery, Reserve, TypeRoom, Review, Regulations
 
 
 class HotelAdmin(admin.ModelAdmin):
@@ -12,9 +11,9 @@ class HotelAdmin(admin.ModelAdmin):
 
 class ReviewAdmin(admin.ModelAdmin):
     """ Отзывы """
-    list_display = ('id', 'reserve', 'author', 'rating', 'body', 'pub_date')
-    list_display_links = ('id',)
-    list_filter = ('reserve', 'rating',)
+    list_display = ( 'room', 'reserve', 'author', 'rating', 'body', 'pub_date')
+    list_display_links = ('room',)
+    list_filter = ('room',)
 
 
 class GalleryInLine(admin.StackedInline):
@@ -24,7 +23,7 @@ class GalleryInLine(admin.StackedInline):
 
 class RoomAdmin(admin.ModelAdmin):
     """ Команты """
-    list_display = ('number', 'type', 'price', 'number_of_guests',)
+    list_display = ('number', 'type', 'price', 'number_of_guests', 'rating')
     list_display_links = ('number',)
     search_fields = ('number',)
     list_filter = ('number_of_guests', 'type',)
@@ -51,8 +50,16 @@ class ReserveAdmin(admin.ModelAdmin):
     list_filter = ('room',)
 
 
+class RegulationsAdmin(admin.ModelAdmin):
+    """ Правила комнат """
+    list_display = ('type_room', 'regulation',)
+    list_display_links = ('type_room',)
+    list_filter = ('type_room',)
+
+
 admin.site.register(Reserve, ReserveAdmin)
 admin.site.register(Hotel, HotelAdmin)
+admin.site.register(Regulations, RegulationsAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(TypeRoom, TypeRoomAdmin)
 admin.site.register(Gallery, GalleryAdmin)

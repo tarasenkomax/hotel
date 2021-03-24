@@ -13,7 +13,12 @@
     <a>Тип: {{ room.type }}</a><br>
     <a>Цена: {{ room.price }}</a><br>
     <a>Количество гостей: {{ room.number_of_guests }}</a><br>
-    <a>Средний рейтинг: {{ rating }}</a><br>
+    <a>Рейтинг:
+        {% if room.rating %}
+        {{ room.rating }}</a><br>
+        {% else %}
+        У номера еще нет оценок<br>
+        {% endif %}
     <a>Фото для слайдера:</a><br>
     {% if room.photos_of_room.slider_photo1 %}
         <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>

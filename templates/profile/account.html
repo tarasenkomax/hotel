@@ -7,19 +7,19 @@
 </head>
 <body>
 
+<h3>Личный кабнет</h3>
 {% if photo %}
-    <img width="100" height="100" src="{{ photo.url }}" alt="avatar">
+    <img width="150" height="150" src="{{ photo.url }}" alt="avatar">
 {% else %}
-    <img width="100" height="100" src="{% static 'default_ava.jpg' %}" alt="avatar">
+    <img width="150" height="150" src="{% static 'default_ava.jpg' %}" alt="avatar">
 {% endif %}
-<p>Личный кабнет</p>
 <p>Фамилия: {{ surname }}</p>
 <p>Имя: {{ name }}</p>
 <p>Отчество: {{ patronymic }}</p>
+<p>Почта: {{ email }}</p>
 <p>Дата рождения: {{ date_of_birth }}</p>
 <p>Телефон: {{ phone }}</p>
 <p>Статус: {{ status }}</p>
-<p>Почта: {{ email }}</p>
 <p><a href="{% url 'home' %}">На главную</a></p>
 <p><a href="{% url 'account_settings' %}">Настройки</a></p>
 <p><a href="{% url 'logout' %}">Выход</a></p>

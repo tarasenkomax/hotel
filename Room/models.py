@@ -40,6 +40,7 @@ class Room(models.Model):
     type = models.ForeignKey(TypeRoom, on_delete=models.PROTECT, null=True, verbose_name='Тип')
     price = models.IntegerField(null=True, verbose_name='Цена', help_text='указывать в рублях')
     number_of_guests = models.IntegerField(null=True, verbose_name='Количество гостей')
+    rating = models.FloatField(null=True, verbose_name='Средний рейтинг')
 
     def __str__(self):
         return str(self.number)
@@ -103,3 +104,13 @@ class Review(models.Model):
     class Meta:
         verbose_name_plural = 'Отзывы комнат'
         verbose_name = 'Отзыв комнаты'
+
+
+class Regulations(models.Model):
+    """ Правила коматы """
+    type_room = models.ForeignKey(TypeRoom, null=True, on_delete=models.CASCADE, verbose_name='Тип комнаты')
+    regulation = models.TextField(blank=True, null=True, verbose_name='Правило')
+
+    class Meta:
+        verbose_name_plural = 'Правила комнат'
+        verbose_name = 'Правило комнаты'

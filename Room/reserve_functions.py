@@ -57,7 +57,7 @@ def average_rating(room):
         average = sum(rating_list) / len(rating_list)
         return average
     else:
-        return 'У номера еще нет отзывов'
+        return None
 
 
 def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipient):
@@ -70,3 +70,4 @@ def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipi
                                                                                           number_of_guests)
     send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],
               fail_silently=False)
+
