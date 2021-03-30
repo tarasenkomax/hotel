@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import variables
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -112,12 +113,12 @@ AUTH_USER_MODEL = 'Account.CustomUser'
 
 # ----- SMTP -----
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'djangotest97@gmail.com'
-EMAIL_HOST_PASSWORD = '15071997abc'
+EMAIL_HOST_USER = variables.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = variables.EMAIL_HOST_PASSWORD
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # TODO удалить на проде
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # TODO удалить на проде
 
 PASSWORD_RESET_TIMEOUT_DAYS = 2
 ACCOUNT_ACTIVATION_DAYS = 2

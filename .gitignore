@@ -12,3 +12,4 @@ Account/__pycache__/
 Account/static/
 Room/migrations/
 Room/__pycache__/
+variables.py
