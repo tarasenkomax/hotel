@@ -7,6 +7,33 @@
 </head>
 <body>
 <h3>Номера, которые мы для вас подобрали</h3>
+{{ error }}
+<form method="post" >
+    {% csrf_token %}
+    Прибытие:
+    <br/>
+    <input type="date" value="{{ day_in }}" name="day_in"/>
+    <br/>
+    Выезд:
+    <br/>
+    <input type="date" value="{{ day_out }}" name="day_out"/>
+    <br/>
+    Гости:
+    <br/>
+    <input type="number" value="{{ number_of_guests }}" name="number_of_guests"/>
+    <br/>
+    Цена от:
+    <br/>
+    <input type="number" value="{{ price_start }}" name="price_start"/>
+    <br/>
+    Цена до:
+    <br/>
+    <input type="number" value="{{ price_end }}" name="price_end"/>
+
+    <br/>
+    <br/>
+    <input type="submit" value="Применить" />
+</form>
 {% block content %}
 {% for room in  rooms %}
     <a>Номер: {{ room.number }}</a><br>

@@ -36,17 +36,16 @@ def account(request):
     """ Возвращает информацию о пользователе в ЛК"""
     return render(request, 'profile/account.html', {'name': request.user.name,
                                                     'surname': request.user.surname,
-                                                    'patronymic':request.user.patronymic,
                                                     'date_of_birth': request.user.date_of_birth,
                                                     'photo': request.user.photo,
                                                     'phone': request.user.phone,
                                                     'email': request.user.email,
-                                                    'status': request.user.status,
+                                                    'patronymic': request.user.patronymic,
                                                     })
 
 
 @login_required
-def account_settings(request):
+def account_settings(request):  # TODO не заливаются фотки с ЛК
     """ Заполняет информацию о пользователе в ЛК """
     form = UserSettingsForm()
     if request.method == 'POST':
@@ -57,6 +56,7 @@ def account_settings(request):
             if form.is_valid():
                 if form.has_changed():
                     form.save()
+                    form = UserSettingsForm(instance=request.user)
                     return redirect('account')
                 else:
                     return redirect('account')

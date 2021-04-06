@@ -6,6 +6,7 @@ from django.utils import timezone
 from Room.forms import AddReview
 from Room.models import Room, Reserve, Review, Regulations
 from Room.reserve_functions import check_availability, number_of_days, dates_of_user, average_rating, send_email
+import datetime as DT
 
 
 def all_rooms(request):
@@ -108,26 +109,32 @@ def list_free_rooms(request):
         day_out = request.GET['day_out']
         number_of_guests = request.GET['number_of_guests']
         filtered_rooms = Room.objects.filter(number_of_guests__gte=int(number_of_guests)).order_by('number')
-        free_rooms = []
-        for room in filtered_rooms:
-            if check_availability(room, day_in, day_out):
-                free_rooms.append(room)
-        if dates_of_user(request.user, day_in, day_out):
-            paginator = Paginator(free_rooms, 3)  # 3 поста на каждой странице
-            page = request.GET.get('page')
-            try:
-                rooms = paginator.page(page)
-            except PageNotAnInteger:
-                # Если страница не является целым числом, поставим первую страницу
-                rooms = paginator.page(1)
-            except EmptyPage:
-                # Если страница больше максимальной, доставить последнюю страницу результатов
-                rooms = paginator.page(paginator.num_pages)
-            return render(request, 'rooms/list_free_rooms.html',
-                          {'page': page, 'rooms': rooms, 'day_in': day_in, 'day_out': day_out,
-                           'number_of_guests': number_of_guests})
-        else:
-            return redirect('help_page')
+    elif request.method == 'POST':
+        if request.POST['day_in'] and request.POST['day_out'] or request.POST['number_of_guests']:
+            day_in = request.POST['day_in']
+            day_out = request.POST['day_out']
+            number_of_guests = request.POST['number_of_guests']
+            filtered_rooms = Room.objects.filter(number_of_guests__gte=int(number_of_guests)).order_by('number')
+    free_rooms = []
+    for room in filtered_rooms:
+        if check_availability(room, day_in, day_out):
+            free_rooms.append(room)
+    if dates_of_user(request.user, day_in, day_out):
+        paginator = Paginator(free_rooms, 3)  # 3 поста на каждой странице
+        page = request.GET.get('page')
+        try:
+            rooms = paginator.page(page)
+        except PageNotAnInteger:
+            # Если страница не является целым числом, поставим первую страницу
+            rooms = paginator.page(1)
+        except EmptyPage:
+            # Если страница больше максимальной, доставить последнюю страницу результатов
+            rooms = paginator.page(paginator.num_pages)
+        return render(request, 'rooms/list_free_rooms.html',
+                      {'page': page, 'rooms': rooms, 'day_in': day_in, 'day_out': day_out,
+                       'number_of_guests': number_of_guests})
+    else:
+        return redirect('help_page')
 
 
 @login_required(login_url="login")
@@ -155,4 +162,4 @@ def add_review(request, pk):
             return redirect('all_reserves')
     return render(request, 'rooms/add_review.html',
                   {'reserve': reserve, 'form': form, 'room_reserve': room_reserve, 'day_in': day_in,
-                   'day_out': day_out,})
+                   'day_out': day_out, })

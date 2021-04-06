@@ -43,19 +43,6 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class StatusClient(models.Model):
-    """ Модель статуса клиента """
-    nomination = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Наименование')
-    discount = models.CharField(max_length=20, null=False, verbose_name='Размер скидки')
-    discount_value = models.FloatField(max_length=3, null=False, verbose_name='Коэффициент')
-
-    def __str__(self):
-        return self.nomination
-
-    class Meta:
-        verbose_name_plural = 'Статусы'
-        verbose_name = 'Статус'
-
 
 DEFAULT_STATUS_ID = 1  # Константа, для дефолтного присвоения статуса 'Стандартный' зарегистрированным пользователям
 
@@ -70,8 +57,7 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=22, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
-    status = models.ForeignKey(StatusClient, default=DEFAULT_STATUS_ID, on_delete=models.PROTECT, null=True,
-                               verbose_name='Статус')
+
 
     def __str__(self):
         return '{0} {1}'.format(self.name, self.surname)
@@ -87,3 +73,5 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
+
+

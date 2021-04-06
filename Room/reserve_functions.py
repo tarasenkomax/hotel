@@ -6,17 +6,22 @@ from Room.models import Reserve, Review
 def check_availability(room, day_in, day_out):
     """ Проверка, не пересекаются ли даты резрва отдельной комнаты с указанными данными """
     reserve_list = Reserve.objects.filter(room=room)
+    counter_true = 0
+    counter_false = 0
     if len(reserve_list) == 0:
         return True
     if (type(day_in) or type(day_out)) == str:
         day_in = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
         day_out = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
     for reserve in reserve_list:
-        if reserve.day_in > day_out or reserve.day_out <= day_in:
-            return True
+        if reserve.day_in >= day_out or reserve.day_out <= day_in:
+            counter_true += 1
         else:
-            return False
-
+            counter_false += 1
+    if counter_false > 0:
+        return False
+    else:
+        return True
 
 def number_of_days(day_in, day_out):
     """ Подсчет количества дней"""
@@ -70,4 +75,3 @@ def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipi
                                                                                           number_of_guests)
     send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],
               fail_silently=False)
-
