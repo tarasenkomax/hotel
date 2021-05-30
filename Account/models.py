@@ -11,7 +11,7 @@ def user_directory_path(instance, filename):
     return 'users/{0}/{1}'.format(instance.email, filename)
 
 
-def review_directory_path(instance, filename):
+def review_directory_path(instance, filename):  # TODO удалить
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'users/{0}/{1}'.format(instance.author, filename)
 
@@ -43,10 +43,6 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-
-DEFAULT_STATUS_ID = 1  # Константа, для дефолтного присвоения статуса 'Стандартный' зарегистрированным пользователям
-
-
 class CustomUser(AbstractUser):
     """ Кастомная модель пользователя """
     username = None
@@ -57,7 +53,6 @@ class CustomUser(AbstractUser):
     phone = models.CharField(max_length=22, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
-
 
     def __str__(self):
         return '{0} {1}'.format(self.name, self.surname)
@@ -73,5 +68,3 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
-
-

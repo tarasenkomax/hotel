@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отмена брони</title>
+</head>
+<body>
+{% block content %}
+    {% if delay == False %}
+    <h2>Вы уверены, что хотите отменить эту бронь?</h2>
+        {% if message %}
+            {{ message }}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}<br>
+            <button type="submit">Отменить</button>
+        {% else %}
+        <h2>Ошибка отмены бронирования.</h2>
+        Бронь уже истекла.
+    {% endif %}
+        </form>
+{% endblock %}
+<p><a href="{% url 'all_reserves' %}">Назад</a></p>
+<p><a href="{% url 'home' %}">На главную</a></p>
+</body>
+</html>

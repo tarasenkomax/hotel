@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Настройки</title>
@@ -9,8 +10,10 @@
 {% if message %}
     <p>{{ message }}</p>
 {% endif %}
-{% if user.profile.photo %}
-    <img src="{{ user.profile.photo.url }}" alt="avatar">
+{% if photo %}
+    <img width="150" height="150" src="{{ photo.url }}" alt="avatar">
+{% else %}
+    <img width="150" height="150" src="{% static 'default_ava.jpg' %}" alt="avatar">
 {% endif %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}

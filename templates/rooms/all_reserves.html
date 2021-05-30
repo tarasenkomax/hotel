@@ -16,6 +16,7 @@
         {% if not reserve.review %}
         <a href="{% url 'add_review' reserve.id %}">Оставить отзыв</a><br>
         {% endif %}
+        <a href="{% url 'cancel' reserve.id%}">Отмена брони</a><br>
         <br>
     {% endfor %}
     {% include "../pagination.html" with page=reserves %}

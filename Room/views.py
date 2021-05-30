@@ -5,7 +5,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from Room.forms import AddReview
 from Room.models import Room, Reserve, Review, Regulations
-from Room.reserve_functions import check_availability, number_of_days, dates_of_user, average_rating, send_email
+from Room.reserve_functions import check_availability, number_of_days, dates_of_user, average_rating, send_email, \
+    send_email_cancel
 import datetime as DT
 
 
@@ -40,13 +41,40 @@ def detail_room(request, number):
 
 def help_page(request):
     """ Информация по отдельной комнате """
+
     return render(request, 'rooms/help_page.html', )
+
+
+def cancel(request, pk):
+    """ Отмена брони """
+    reserve = Reserve.objects.get(pk=pk)
+    if DT.datetime.now().date() < reserve.day_in:
+        days = number_of_days(reserve.day_in, reserve.day_out)
+        delay = False
+    elif DT.datetime.now().date() == reserve.day_in:
+        days = number_of_days(reserve.day_in, reserve.day_out) - 1
+        delay = False
+    else:
+        if DT.datetime.now().date() > reserve.day_out:
+            days = 0
+            delay = True
+        else:
+            days = number_of_days(DT.datetime.now().date(), reserve.day_out)
+            delay = False
+    cost = reserve.room.price * days
+    message = 'Вам вернется стоимость за {} дней с {} по {} в размере {} рублей.'.format(days, reserve.day_in,
+                                                                                         reserve.day_out, cost)
+    if request.method == 'POST':
+        reserve.delete()
+        send_email_cancel(request.user.email)
+        return redirect('all_reserves')
+    return render(request, 'rooms/cancel.html', {'message': message, 'delay':delay})
 
 
 @login_required(login_url="login")
 def all_reserves(request):
     """ Вывод всех броней пользователя"""
-    reserve_list = Reserve.objects.filter(client=request.user).order_by('id')
+    reserve_list = Reserve.objects.filter(client=request.user).order_by('-id')
     paginator = Paginator(reserve_list, 3)  # 3 поста на каждой странице
     page = request.GET.get('page')
     try:
@@ -101,7 +129,7 @@ def reserve_room(request, number):
                                                        'regulations_list': regulations_list})
 
 
-@login_required(login_url="login")  # TODO обрабатывать и не авторизоавнных пользователей
+@login_required(login_url="login")
 def list_free_rooms(request):
     """ Вывод свободных номеров """
     if request.method == 'GET':

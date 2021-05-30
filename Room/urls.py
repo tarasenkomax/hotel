@@ -11,6 +11,7 @@ urlpatterns = [
     path('list_free_rooms', views.list_free_rooms, name='list_free_rooms'),
     path('reserve_room/<int:number>', views.reserve_room, name='reserve_room'),
     path('all_reserves', views.all_reserves, name='all_reserves'),
+    path('cancel/<int:pk>', views.cancel, name='cancel'),
     path('pay/<int:number>', views.pay, name='pay'),
     # ----- Отзывы -----
     path('add_review/<int:pk>', views.add_review, name='add_review'),

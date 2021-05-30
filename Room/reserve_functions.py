@@ -23,10 +23,17 @@ def check_availability(room, day_in, day_out):
     else:
         return True
 
+
 def number_of_days(day_in, day_out):
     """ Подсчет количества дней"""
-    day_in_ = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
-    day_out_ = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
+    if type(day_in) == str:
+        day_in_ = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
+    else:
+        day_in_ = day_in
+    if type(day_out) == str:
+        day_out_ = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
+    else:
+        day_out_ = day_out
     days = day_out_ - day_in_
     return days.days
 
@@ -67,11 +74,20 @@ def average_rating(room):
 
 def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipient):
     """ Отправка письма о подтверждении брони """
-    email_theme = 'Диполмная работа'
+    email_theme = 'Дипломная работа'
     email_text = 'Здравствуйте, {} {} , ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
                  '------\n Комната: {}\n Прибытие: {}.\n Выезд: {}.\n Количество гостей: {}\n Желаем вам ' \
                  'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, patronymic, room,
                                                                                           day_in, day_out,
                                                                                           number_of_guests)
+    send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],
+              fail_silently=False)
+
+
+def send_email_cancel(recipient):
+    """ Отправка письма об отмене брони """
+    email_theme = 'Дипломная работа. Отмена бронирования.'
+    email_text = 'Здравствуйте. Ваша заявка на отмену брони одобрена.\n\n\n\n --\n С уважением, ' \
+                 'Администрация отеля.'
     send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],
               fail_silently=False)

@@ -45,7 +45,7 @@ def account(request):
 
 
 @login_required
-def account_settings(request):  # TODO не заливаются фотки с ЛК
+def account_settings(request):
     """ Заполняет информацию о пользователе в ЛК """
     form = UserSettingsForm()
     if request.method == 'POST':
@@ -65,7 +65,7 @@ def account_settings(request):  # TODO не заливаются фотки с �
         if CustomUser.objects.exists():
             # Если профиль заполнен, то выводим на экран
             form = UserSettingsForm(instance=request.user)
-    return render(request, 'profile/account_settings.html', {'form': form})
+    return render(request, 'profile/account_settings.html', {'form': form, 'photo': request.user.photo})
 
 
 class SignUp(generic.CreateView):
