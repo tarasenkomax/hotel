@@ -3,7 +3,6 @@
 *.pyc
 __pycache__/
 local_settings.py
-/media
 venv/
 .idea/
 Account/migrations/
@@ -12,3 +11,4 @@ Account/static/
 Room/migrations/
 Room/__pycache__/
 variables.py
+/media/
