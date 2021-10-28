@@ -1,11 +1,18 @@
-<title>Востановление пароля</title>
-
+{% extends "base.html" %}
 {% block content %}
-    <h1>Забыли пароль?</h1>
-    <p>Введите свой адрес электронной почты, чтобы получить новый пароль.</p>
-    <form  method="post">
-        {{ form.as_p }}
-        <p><input type="submit" class="btn btn-primary" value="Отправить электронное письмо"></p>
-        {% csrf_token %}
+<div class="forgot-pass">
+    <form class="forgot-pass-card" action="#" method="post">
+        <h1 class="forgot-pass__header">Забыли пароль</h1>
+        <div class="forgot-pass-card__fields">
+            <p>Введите адрес электронной почты для восстановления пароля</p>
+            {% csrf_token %}
+            {{ form.as_p }}
+        </div>
+        <div class="forgot-pass-card__send">
+            <button class="button button_directed button_high" type="submit">
+                <div class="button__content">Отправить</div>
+            </button>
+        </div>
     </form>
+</div>
 {% endblock %}

@@ -1,15 +1,23 @@
-<title>Сбросить пароль</title>
-
+{% extends "base.html" %}
 {% block content %}
-    <h1>Востановление пароля</h1>
     {% if validlink %}
-        <p>Пожалуйста, введите ваш новый пароль дважды:</p>
-        <form  method="post">
-            {{ form.as_p }}
-            {% csrf_token %}
-            <p><input type="submit" value="Изменить пароль"/></p>
-        </form>
-    {% else %}
-        <p>Ссылка для сброса пароля недействительна. Возможно она уже использовалась. Запросите новый сброс пароля.</p>
+        <div class="change-pass">
+            <form class="change-pass-card" action="#" method="post">
+                <h1 class="recovery-pass__header">Восстановление пароля</h1>
+                <div class="change-pass-card__fields">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <div class="change-pass-card__send">
+                    <button class="button button_directed button_high" type="submit">
+                        <div class="button__content">Изменить пароль</div>
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="booking-error">
+            <h1 align="center">Ссылка для сброса пароля недействительна. Возможно она уже использовалась. Запросите новый сброс пароля.</h1>
+        </div>
     {% endif %}
 {% endblock %}

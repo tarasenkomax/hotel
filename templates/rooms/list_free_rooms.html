@@ -1,56 +1,413 @@
-{% load urlparams %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru-RU">
+{% load static %}
+{% load urlparams %}
+
 <head>
-    <meta charset="UTF-8">
-    <title>Свободные номера</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="{% static './assets/favicons/apple-touch-icon.png' %}"
+    />
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+
+            href="{% static 'assets/favicons/favicon-32x32.png' %}"
+    /><!-- РАБОТАЕТ -->
+    <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="{% static './assets/favicons/site.webmanifest' %}"
+    />
+    <link rel="manifest" href="{% static './assets/favicons/site.webmanifest' %}"/>
+    <link
+            rel="mask-icon"
+            href="./assets/favicons/safari-pinned-tab.svg"
+            color="#5bbad5"
+    />
+    <meta name="msapplication-TileColor" content="#603cba" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Настройки</title>
+    <link href="{% static 'style_0.css' %}" rel="stylesheet" />
 </head>
 <body>
-<h3>Номера, которые мы для вас подобрали</h3>
-{{ error }}
-<form method="post" >
-    {% csrf_token %}
-    Прибытие:
-    <br/>
-    <input type="date" value="{{ day_in }}" name="day_in"/>
-    <br/>
-    Выезд:
-    <br/>
-    <input type="date" value="{{ day_out }}" name="day_out"/>
-    <br/>
-    Гости:
-    <br/>
-    <input type="number" value="{{ number_of_guests }}" name="number_of_guests"/>
-    <br/>
-    Цена от:
-    <br/>
-    <input type="number" value="{{ price_start }}" name="price_start"/>
-    <br/>
-    Цена до:
-    <br/>
-    <input type="number" value="{{ price_end }}" name="price_end"/>
+{% if  user.is_authenticated %}
+    <header class="headers">
+        <div class="header">
+            <div class="header__wrapper container">
+                <div class="header__head">
+                    <div class="header__logo">
+                        <a class="logo" href="{% url 'home' %}"
+                        ><img
+                                class="logo__img"
+                                src="{% static './assets/images/logo-img.svg' %}"
+                                alt="TOXIN"
+                        /><!-- РАБОТАЕТ --></a>
+                    </div>
+                    <div class="header__burger js-header__burger">
+                        <div class="header__burger-divisions"></div>
+                    </div>
+                </div>
+                <div class="header__body js-header__body">
+                    {% if user.is_staff%}
+                        <a class="header__item" href="{% url 'admin:index' %}">Админка</a>
+                    {% endif %}
+                    <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
+                    <div class="header__item">
+                        <div class="header__avat">
+                            {% if user.photo %}
+                                <a href="{% url 'account' %}"></a>
+                                <img width="50" height="50" src="{{ user.photo.url }}" alt="avatar">
+                            {% else %}
+                                <a href="{% url 'account' %}"></a>
+                                <img width="50" height="50" src="{% static 'default_ava.jpg' %}" alt="avatar"/></a>
+                            {% endif %}
+                        </div>
+                        <div class="header__user"><a href="{% url 'account' %}">{{ user.surname}} {{ user.name }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% else %}
+    <header class="headers">
+        <div class="header">
+            <div class="header__wrapper container">
+                <div class="header__head">
+                    <div class="header__logo">
+                        <a class="logo" href="./"
+                        ><img
+                                class="logo__img"
+                                src="{% static './assets/images/logo-img.svg' %}"
+                                alt="TOXIN"
+                        /></a>
+                    </div>
+                    <div class="header__burger js-header__burger">
+                        <div class="header__burger-divisions"></div>
+                    </div>
+                </div>
+                <div class="header__body js-header__body">
+                    <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
+                    <div class="header__item">
+                        <a class="button button_ghostly" href="{% url 'login' %}"
+                        ><div class="button__content">Войти</div></a
+                        >
+                    </div>
+                    <div class="header__item">
+                        <a class="button" href="{% url 'signup' %}"
+                        ><div class="button__content">Зарегистрироваться</div></a
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endif %}
+<main class="main">
+    <div class="search-page container">
+        <form class="search-filter" action="#" method="get">
+            {% csrf_token %}
+            <div class="landing-card__twin-datepick">
+                <div class="twin-datepick js-twin-datepick">
+                    <div class="twin-datepick__item">
+                        <label class="twin-datepick__label"
+                        >Прибытие
+                            <div
+                                    class="
+                          twin-datepick__output twin-datepick__output_arrival
+                        "
+                            >
+                                <input
+                                        class="twin-datepick__input"
+                                        default="{{ day_in }}"
+                                        placeholder="{{ day_in }}"
+                                        name="day_in"
+                                        readonly="readonly"
+                                /></div
+                            ></label>
+                    </div>
+                    <div class="twin-datepick__item">
+                        <label class="twin-datepick__label"
+                        >Выезд
+                            <div
+                                    class="
+                          twin-datepick__output twin-datepick__output_departure
+                        "
+                            >
+                                <input
+                                        class="twin-datepick__input"
+                                        default="{{ day_out }}"
+                                        placeholder="{{ day_out }}"
+                                        name="day_out"
+                                        readonly="readonly"
+                                /></div
+                            ></label>
+                    </div>
+                </div>
+            </div>
+            <div class="search-filter__section">
 
-    <br/>
-    <br/>
-    <input type="submit" value="Применить" />
-</form>
-{% block content %}
-{% for room in  rooms %}
-    <a>Номер: {{ room.number }}</a><br>
-    <a>Тип: {{ room.type }}</a><br>
-    <a>Цена: {{ room.price }}</a><br>
-    <a>Количество гостей: {{ room.number_of_guests }}</a><br>
-    <a>Рейтинг:
-        {% if room.rating %}
-            {{ room.rating }}</a><br>
-        {% else %}
-            У номера еще нет оценок<br>
-        {% endif %}
-    <a href="{% url 'reserve_room' room.number %}{% urlparams day_in=day_in day_out=day_out number_of_guests=number_of_guests%}">Забронировать</a><br><br>
-{% endfor %}
-    {% include "../pagination_for_list_free_rooms.html" with page=rooms %}
+                <div class="search-filter__group">
+                    <label class="search-filter__label">Гости</label>
+                    <div
+                            class="dropdown-absolute js-dropdown-absolute"
+                            wordforms="гость, гостя, гостей"
+                    >
+                        <div class="dropdown-absolute__output">
+                            <input
+                                    class="dropdown-absolute__input"
+                                    default="{{ number_of_guests }}"
+                                    name="number_of_guests"
+                                    readonly="readonly"
+                            />
+                        </div>
+                        <div class="dropdown-absolute__list">
+                            <div class="dropdown-absolute__item">
+                                <div class="dropdown-absolute__item-type">Гости</div>
+                                <div class="dropdown-absolute__counter-element">
+                                    <div class="dropdown-absolute__minus">-</div>
+                                    <div class="dropdown-absolute__counter">0</div>
+                                    <div class="dropdown-absolute__plus">+</div>
+                                </div>
+                            </div>
+                            <div class="dropdown-absolute__buttons">
+                                <div class="dropdown-absolute__clear-btn">Очистить</div>
+                                <div class="dropdown-absolute__apply-btn">Применить</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-filter__range-group">
+                    <div class="search-filter__range">
+                        <div class="range-slider">
+                            <div
+                                    class="js-multislider-v43"
+                                    data-description="Диапазон цены"
+                                    data-min-value="0"
+                                    data-max-value="15000"
+                                    data-value1="5000"
+                                    data-value2="10000"
+                                    data-step="100"
+                                    data-slider-type="double"
+                            ></div>
+                        </div>
+                    </div>
+                    <p class="search-filter__description">
+                        Стоимость за сутки пребывания в номере
+                    </p>
+                </div>
+                <div class="search-filter__group">
+                    <div class="search-filter__btnn">
+                        <button
+                                class="button button_ghostly button_high button_wide"
+                                type="button"
+                        >
+                            <div class="button__content">Применить</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="searched-rooms">
+            <h1 class="searched-rooms__header">
+                Номера, которые мы для вас подобрали
+            </h1>
+            <div class="searched-rooms__room-cards">
+                {% block content %}
+                {% for room in  rooms %}
+                <div class="room-card">
+                    <div class="room-card__carousel">
+                        <div class="carousel js-carousel">
+                            <div class="carousel__item">
+                                <img
+                                        class="carousel__img"
+                                        src="{{ room.photos_of_room.slider_photo1.url }}"
+                                        alt="room-352"
+                                />
+                            </div>
+                            <div class="carousel__item">
+                                <img
+                                        class="carousel__img"
+                                        src="{{ room.photos_of_room.slider_photo2.url }}"
+                                        alt="room-840"
+                                />
+                            </div>
+                            <div class="carousel__item">
+                                <img
+                                        class="carousel__img"
+                                        src="{{ room.photos_of_room.slider_photo3.url }}"
+                                        alt="room-888"
+                                />
+                            </div>
+                            <div class="carousel__item">
+                                <img
+                                        class="carousel__img"
+                                        src="{{ room.photos_of_room.slider_photo4.url }}"
+                                        alt="room-840"
+                                />
+                            </div>
+                            <div class="carousel__buttons">
+                                <button class="carousel__prev"></button>
+                                <button class="carousel__next"></button>
+                            </div>
+                            <div class="carousel__dots">
+                                <div class="carousel__dot"></div>
+                                <div class="carousel__dot"></div>
+                                <div class="carousel__dot"></div>
+                                <div class="carousel__dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="room-card__description" href="{% url 'reserve_room' room.number %}{% urlparams day_in=day_in day_out=day_out number_of_guests=number_of_guests%}"
+                    ><div class="room-card__header">
+                        <div class="room-number">
+                            <label class="room-number__prefix">№</label>
+                            <h2 class="room-number__value">{{ room.number }}</h2>
+                        </div>
+                        <div class="room-cost">
+                            <label class="room-cost__rubles">{{ room.price }} ₽</label>
+                            <div class="room-cost__period">в сутки</div>
+                        </div>
+                    </div>
+                        <div class="room-card__spacer"></div>
+                        <div class="room-card__rating">
+                            <div class="room-card__text">{{ room.type }}</div>
+                            <div class="room-card__reviews">
+                                <p class="room-card__postfix">Рейтинг </p>
+                                {% if room.rating %}
+                                    <label class="room-card__count"> {{ room.rating }}</label>
+                                {% else %}
+                                    <label class="room-card__count"> 5,0</label>
+                                {% endif %}
+                            </div>
+                        </div></a
+                    >
+                </div>
+                {% endfor %}
+            </div>
+                    <div class="searched-rooms__pagination">
+            {% include "../pagination_for_list_free_rooms.html" with page=rooms %}
+                    </div>
+            {% endblock %}
+        </div>
+    </div>
+</main>
+<footer class="footers">
+    <div class="footer">
+        <div class="footer__copyrights">
+            <div class="footer__content container">
+                <p class="footer__copyright">
+                    Copyright © 2021. Проект создан в рамках дипломной работы
+                </p>
+                <div class="footer__social">
+                    <div class="footer__reference">
+                        <div class="social-reference">
+                            <a
+                                    class="social-reference__link"
+                                    href="https://twitter.com/?lang=ru"
+                            ><img
+                                    class="social-reference__img"
+                                    src="{% static './assets/images/twitter-logo.svg' %}"
+                                    alt="twitter"
+                                    height="22px"
+                                    width="22px"
+                            /></a>
+                        </div>
+                    </div>
+                    <div class="footer__reference">
+                        <div class="social-reference">
+                            <a
+                                    class="social-reference__link"
+                                    href="https://ru-ru.facebook.com/"
+                            ><img
+                                    class="social-reference__img"
+                                    src="{% static './assets/images/facebook-logo.svg' %}"
+                                    alt="facebook"
+                                    height="22px"
+                                    width="22px"
+                            /></a>
+                        </div>
+                    </div>
+                    <div class="footer__reference">
+                        <div class="social-reference">
+                            <a
+                                    class="social-reference__link"
+                                    href="https://www.instagram.com/?hl=ru"
+                            ><img
+                                    class="social-reference__img"
+                                    src="{% static './assets/images/instagram-logo.svg' %}"
+                                    alt="instagram"
+                                    height="22px"
+                                    width="22px"
+                            /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-mobile">
+        <div class="footer-mobile__copyrights">
+            <div class="footer-mobile__logo">
+                <a class="logo" href="./"
+                ><img
+                        class="logo__img"
 
-{% endblock %}
-<p><a href="{% url 'home' %}">На главную</a></p>
+                        src="{% static './assets/images/logo-img.svg' %}"
+                        alt="TOXIN"
+                /></a>
+            </div>
+            <p class="footer-mobile__text">
+                Copyright © 2021. Проект создан в рамках дипломной работы
+            </p>
+            <div class="footer-mobile__socials">
+                <div class="footer-mobile__link">
+                    <div class="social-reference">
+                        <a class="social-reference__link" href="/plug-link"
+                        ><img
+                                class="social-reference__img"
+                                src="{% static './assets/images/twitter-logo.svg' %}"
+                                alt="twitter"
+                                height="22px"
+                                width="22px"
+                        /></a>
+                    </div>
+                </div>
+                <div class="footer-mobile__link">
+                    <div class="social-reference">
+                        <a class="social-reference__link" href="/plug-link"
+                        ><img
+                                class="social-reference__img"
+                                src="{% static './assets/images/facebook-logo.svg' %}"
+                                alt="facebook"
+                                height="22px"
+                                width="22px"
+                        /></a>
+                    </div>
+                </div>
+                <div class="footer-mobile__link">
+                    <div class="social-reference">
+                        <a class="social-reference__link" href="/plug-link"
+                        ><img
+                                class="social-reference__img"
+                                src="{% static './assets/images/instagram-logo.svg' %}"
+                                alt="instagram"
+                                height="22px"
+                                width="22px"
+                        /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="{% static 'bundle_0.js' %}"></script>
 </body>
 </html>

@@ -1,71 +1,25 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 import datetime as DT
+
+from django.views.generic import DetailView
+
 from Account.forms import CustomUserCreationForm, UserSettingsForm
 from Account.models import CustomUser
 
 
-def home(request):
-    """Домашняя страница"""
-    if request.method == 'POST':
-        if request.POST['day_in'] and request.POST['day_out'] and request.POST['number_of_guests']:
-            day_in = request.POST['day_in']
-            day_out = request.POST['day_out']
-            number_of_guests = int(request.POST['number_of_guests'])
-            if number_of_guests <= 0:
-                return render(request, 'home.html', {'error': 'Введите корректное число гостей'})
-            if day_in > day_out:
-                return render(request, 'home.html', {'error': 'Выезд не может быть раньше заезда'})
-            if day_in == day_out:
-                return render(request, 'home.html', {'error': 'Укажите корректные даты'})
-            if DT.datetime.strptime(day_in, '%Y-%m-%d').date() <= DT.datetime.now().date():
-                return render(request, 'home.html', {'error': 'Нельзя бронировать на прошедшие дни'})
-            else:
-                return redirect('/list_free_rooms?day_in={0}&day_out={1}&number_of_guests={2}'.format(day_in, day_out,
-                                                                                                      number_of_guests))
-        else:
-            return render(request, 'home.html', {'error': 'Пожалуйста заполните все поля формы'})
-    return render(request, 'home.html')
-
-
-@login_required
-def account(request):
+class Account(LoginRequiredMixin, DetailView):
     """ Возвращает информацию о пользователе в ЛК"""
-    return render(request, 'profile/account.html', {'name': request.user.name,
-                                                    'surname': request.user.surname,
-                                                    'date_of_birth': request.user.date_of_birth,
-                                                    'photo': request.user.photo,
-                                                    'phone': request.user.phone,
-                                                    'email': request.user.email,
-                                                    'patronymic': request.user.patronymic,
-                                                    })
+    model = CustomUser
+    template_name = "profile/account.html"
+    context_object_name = "user"
 
-
-@login_required
-def account_settings(request):
-    """ Заполняет информацию о пользователе в ЛК """
-    form = UserSettingsForm()
-    if request.method == 'POST':
-        # Если профиль заполнен, то вносим изменения
-        # Профиль заполнен всегда, так как почта указывается при регистрации
-        if CustomUser.objects.exists():
-            form = UserSettingsForm(request.POST, request.FILES, instance=request.user)
-            if form.is_valid():
-                if form.has_changed():
-                    form.save()
-                    form = UserSettingsForm(instance=request.user)
-                    return redirect('account')
-                else:
-                    return redirect('account')
-    else:
-        # Если GET
-        if CustomUser.objects.exists():
-            # Если профиль заполнен, то выводим на экран
-            form = UserSettingsForm(instance=request.user)
-    return render(request, 'profile/account_settings.html', {'form': form, 'photo': request.user.photo})
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomUser, email=self.request.user.email)
 
 
 class SignUp(generic.CreateView):
@@ -81,3 +35,36 @@ class SignUp(generic.CreateView):
         user = authenticate(username=email, password=password)
         login(self.request, user)
         return view
+
+
+def home(request):
+    """Домашняя страница"""
+    if request.method == 'POST':
+        if request.POST['day_in'] and request.POST['day_out'] and request.POST['number_of_guests']:
+            day_in = DT.datetime.strptime(request.POST['day_in'], '%d.%m.%Y').date()
+            day_out = DT.datetime.strptime(request.POST['day_out'], '%d.%m.%Y').date()
+            number_of_guests = int(request.POST['number_of_guests'][0])
+            return redirect('/list_free_rooms?day_in={0}&day_out={1}&number_of_guests={2}'.format(day_in, day_out,
+                                                                                                  number_of_guests))
+        else:
+            return render(request, 'home.html', {'error': 'Пожалуйста заполните все поля формы'})
+    return render(request, 'home.html')
+
+
+@login_required
+def account_settings(request):
+    """ Заполняет информацию о пользователе в ЛК """
+    form = UserSettingsForm()
+    if request.method == 'POST':
+        if CustomUser.objects.exists():
+            form = UserSettingsForm(request.POST, request.FILES, instance=request.user)
+            if form.is_valid():
+                if form.has_changed():
+                    form.save()
+                    return redirect('account')
+                else:
+                    return redirect('account')
+    else:
+        # Если GET
+        form = UserSettingsForm(instance=request.user)
+    return render(request, 'profile/account_settings.html', {'form': form, 'photo': request.user.photo})

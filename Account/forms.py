@@ -1,7 +1,7 @@
 import re
 
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
-from django.utils.translation import gettext, gettext_lazy as _
+from django.utils.translation import  gettext_lazy as _
 from django import forms
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -11,7 +11,20 @@ from .models import CustomUser
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'surname', 'name', 'patronymic', 'date_of_birth')
+        fields = ('email', 'surname', 'name', 'date_of_birth')
+        error_messages = {
+            'password_mismatch': _('Пароли не совпадают'),
+        }
+    password1 = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+    password2 = forms.CharField(
+        label=_("Password confirmation"),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+        strip=False,
+    )
 
     def clean_name(self):
         name = self.cleaned_data['name']
@@ -33,15 +46,7 @@ class CustomUserCreationForm(UserCreationForm):
             raise forms.ValidationError("Фамилия не должна содержать пробелы")
         return surname
 
-    def clean_patronymic(self):
-        patronymic = self.cleaned_data['patronymic']
-        if re.search(r'[.,:;!_*+()/#¤%&]', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать символы")
-        if re.search(r'[0123456789]', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать цифры")
-        if re.search(r'\s', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать пробелы")
-        return patronymic
+
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -55,7 +60,6 @@ class UserSettingsForm(forms.ModelForm):
         model = CustomUser
         fields = ('surname',
                   'name',
-                  'patronymic',
                   'date_of_birth',
                   'phone',
                   'photo')
@@ -79,16 +83,6 @@ class UserSettingsForm(forms.ModelForm):
         if re.search(r'\s', surname):
             raise forms.ValidationError("Фамилия не должна содержать пробелы")
         return surname
-
-    def clean_patronymic(self):
-        patronymic = self.cleaned_data['patronymic']
-        if re.search(r'[.,:;!_*+()/#¤%&]', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать символы")
-        if re.search(r'[0123456789]', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать цифры")
-        if re.search(r'\s', patronymic):
-            raise forms.ValidationError("Отчество не должно содержать пробелы")
-        return patronymic
 
 
 class AuthenticationUserForm(AuthenticationForm):

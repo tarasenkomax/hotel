@@ -72,12 +72,12 @@ def average_rating(room):
         return None
 
 
-def send_email(name, patronymic, room, day_in, day_out, number_of_guests, recipient):
+def send_email(name, room, day_in, day_out, number_of_guests, recipient):
     """ Отправка письма о подтверждении брони """
     email_theme = 'Дипломная работа'
-    email_text = 'Здравствуйте, {} {} , ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
+    email_text = 'Здравствуйте, {}, ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
                  '------\n Комната: {}\n Прибытие: {}.\n Выезд: {}.\n Количество гостей: {}\n Желаем вам ' \
-                 'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, patronymic, room,
+                 'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, room,
                                                                                           day_in, day_out,
                                                                                           number_of_guests)
     send_mail(email_theme, email_text, 'djangotest97@gmail.com', ['{}'.format(recipient)],

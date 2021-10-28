@@ -1,6 +1,6 @@
-<title>Востановление пароля</title>
-
+{% extends "base.html" %}
 {% block content %}
-    <h1>Пароль установлен</h1>
-    <p>Ваш пароль установлен. Вы можете <a href="{% url "login" %}">войти сейчас</a></p>
+    <div class="booking-error">
+        <h1>Ваш пароль установлен. Вы можете <a href="{% url "login" %}"> <u>войти сейчас</u></a></h1>
+    </div>
 {% endblock %}

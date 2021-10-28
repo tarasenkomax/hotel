@@ -1,41 +1,105 @@
+{% extends "base.html" %}
 {% load urlparams %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Все комнаты</title>
-</head>
-<body>
-<h3>Комнаты</h3>
+{% load static %}
 {% block content %}
-{% for room in  rooms %}
-    <a href="{% url 'detail_room' room.number %}{% urlparams page=page%}">Номер: {{ room.number }}</a><br>
-    <a>Тип: {{ room.type }}</a><br>
-    <a>Цена: {{ room.price }}</a><br>
-    <a>Количество гостей: {{ room.number_of_guests }}</a><br>
-    <a>Рейтинг:
-        {% if room.rating %}
-        {{ room.rating }}</a><br>
-        {% else %}
-        У номера еще нет оценок<br>
-        {% endif %}
-    <a>Фото для слайдера:</a><br>
-    {% if room.photos_of_room.slider_photo1 %}
-        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>
-    {% endif %}
-    {% if room.photos_of_room.slider_photo2 %}
-    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo2.url }}"></a>
-    {% endif %}
-    {% if room.photos_of_room.slider_photo3 %}
-        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo3.url }}"></a>
-    {% endif %}
-    {% if room.photos_of_room.slider_photo4 %}
-        <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo4.url }}"></a>
-    {% endif %}
-    <br>
-{% endfor %}
-    {% include "../pagination.html" with page=rooms %}
+    <div class="all-rooms-page container">
+        <div class="searched-rooms">
+            <h1 class="searched-rooms__header center">Все комнаты</h1>
+            <div class="searched-rooms__room-cards">
+                {% for room in  rooms %}
+                    <div class="room-card">
+                        <div class="room-card__carousel">
+                            <div class="carousel js-carousel">
+                                <div class="carousel__item">
+                                    <img
+                                            class="carousel__img"
+                                            src="{{ room.photos_of_room.slider_photo1.url }}"
+                                            alt="room-888"
+                                    />
+                                </div>
+                                <div class="carousel__item">
+                                    <img
+                                            class="carousel__img"
+                                            src="{{ room.photos_of_room.slider_photo2.url }}"
+                                            alt="room-840"
+                                    />
+                                </div>
+                                <div class="carousel__item">
+                                    <img
+                                            class="carousel__img"
+                                            src="{{ room.photos_of_room.slider_photo3.url }}"
+                                            alt="room-888"
+                                    />
+                                </div>
+                                <div class="carousel__item">
+                                    <img
+                                            class="carousel__img"
+                                            src="{{ room.photos_of_room.slider_photo4.url }}"
+                                            alt="room-840"
+                                    />
+                                </div>
+                                <div class="carousel__buttons">
+                                    <button class="carousel__prev"></button>
+                                    <button class="carousel__next"></button>
+                                </div>
+                                <div class="carousel__dots">
+                                    <div class="carousel__dot"></div>
+                                    <div class="carousel__dot"></div>
+                                    <div class="carousel__dot"></div>
+                                    <div class="carousel__dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="room-card__description" href="{% url 'detail_room' room.number %}"
+                        >
+                            <div class="room-card__header">
+                                <div class="room-number">
+                                    <label class="room-number__prefix">№</label>
+                                    <h2 class="room-number__value">{{ room.number }}</h2>
+                                </div>
+                                <div class="room-cost">
+                                    <label class="room-cost__rubles">{{ room.price }} ₽</label>
+                                    <div class="room-cost__period">в сутки</div>
+                                </div>
+                            </div>
+                            <div class="room-card__spacer"></div>
+                            <div class="room-card__rating">
+                                <div class="room-card__text">{{ room.type }}</div>
+                                <div class="room-card__reviews">
+                                    <p class="room-card__postfix">Рейтинг </p>
+                                    {% if room.rating %}
+                                        <label class="room-card__count"> {{ room.rating }}</label>
+                                    {% else %}
+                                        <label class="room-card__count"> 5,0</label>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if is_paginated %}
+                <div class="searched-rooms__pagination">
+                <div class="pagination">
+                <div class="pagination__items">
+                    {% if page_obj.has_previous %}
+                        <a class="pagination__item pagination__item_leftarrow"
+                           href="/all_rooms?page={{ page_obj.previous_page_number }}"></a>
+                    {% endif %}
+                    <div class="pagination__item">{{ page_obj.number }}</div>
+                    <div class="pagination__item">из</div>
+                    <div class="pagination__item">{{ page_obj.paginator.num_pages }}</div>
+                    {% if page_obj.has_next %}
+                        <a class="pagination__item pagination__item_arrow"
+                           href="/all_rooms?page={{ page_obj.next_page_number }}"></a>
+                    {% endif %}
+                </div>
+            </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
 {% endblock %}
-<p><a href="{% url 'home' %}">На главную</a></p>
-</body>
-</html>

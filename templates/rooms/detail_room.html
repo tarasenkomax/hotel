@@ -1,61 +1,119 @@
+{% extends "base.html" %}
 {% load static %}
 {% load urlparams %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Детали комнаты</title>
-</head>
-<body>
-<h1>Номер: {{ room.number }}</h1>
-<h3><a>Цена: {{ room.price }}</a></h3>
-<h3><a>Тип: {{ room.type.nomination }}</a></h3>
-<h3><a>Количество гостей: {{ room.number_of_guests }}</a></h3>
-<h3>Рейтинг:
-    {% if room.rating %}
-        {{ room.rating }}<br>
-    {% else %}
-        У номера еще нет оценок<br>
-    {% endif %}</h3>
-{% if room.photos_of_room.slider_photo1 %}
-    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo1.url }}"></a>
-{% endif %}
-{% if room.photos_of_room.slider_photo2 %}
-    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo2.url }}"></a>
-{% endif %}
-{% if room.photos_of_room.slider_photo3 %}
-    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo3.url }}"></a>
-{% endif %}
-{% if room.photos_of_room.slider_photo4 %}
-    <a><img width="100" height="100" src="{{ room.photos_of_room.slider_photo4.url }}"></a>
-{% endif %}
-<br>
-<h4>Сведения о номере</h4>
-<a>{{ room.type.description}}</a><br>
+{% block content %}
+    <div class="room">
+        <div class="room__collage">
+            <div class="collage">
+                <div class="collage__img collage__img_main">
+                    <img
+                            src="{{ room.photos_of_room.slider_photo1.url }}"
+                            alt="room-888-1"
+                    /><img
+                        src="{{ room.photos_of_room.slider_photo2.url }}"
+                        alt="room-888-2"
+                />
+                </div>
+                <div class="collage__img collage__img_minor">
+                    <img
+                            src="{{ room.photos_of_room.slider_photo3.url }}"
+                            alt="room-888-3"
+                    /><img
+                        src="{{ room.photos_of_room.slider_photo4.url }}"
+                        alt="room-888-3"
+                />
+                </div>
+            </div>
+        </div>
+        <div class="container room__body">
+            <div class="room__about">
+                <h2 class="room__header">Сведения о номере {{ room.number }}</h2>
+                <div class="room__privileges">
+                    <p>
+                        {{ room.type.description }}
+                    </p>
+                </div>
+            </div>
+            <div class="room__reviews"></div>
+            <div class="room__check">
+                <div class="total-card">
+                    <div class="total-card__header">
+                        <div class="total-card__room-number">
+                            <label class="total-card__prefix">№</label>
+                            <h1 class="total-card__number">{{ room.number }}</h1>
+                            <label class="room-number__lux">{{ room.type }}</label>
+                        </div>
+                        <div class="total-card__room-cost">
+                            <label class="total-card__rubles">{{ room.price }} ₽</label>
+                            <p class="total-card__period">в сутки</p>
+                        </div>
+                    </div>
+                    <div class="total-card__body">
+                        <div class="total-card__input">
+                            <div class="twin-datepick">
+                                <div class="twin-datepick__item_text">
 
-{% if regulations_list %}
-    <h4>Правила </h4>
-    {% for regulation in regulations_list %}
-        {{ regulation.regulation }}<br>
-    {% endfor %}
-{% endif %}
-<h4>Отзывы посетителей номера</h4>
-{% if review_list %}
-    {{ num_of_review }} отзывов<br><br>
-    {% for review in review_list %}
-            {% if  review.author.photo %}
-                <img width="30" height="30" src="{{ review.author.photo.url }}" alt="avatar">
-            {% else %}
-                <img width="30" height="30" src="{% static 'default_ava.jpg' %}" alt="avatar">
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="room__comments">
+                <div class="comments">
+                    <div class="comments__header">
+                        {% if review_list %}
+                            <h2 class="comments__title">Отзывы посетителей номера</h2>
+                            <div class="comments__counter">{{ num_of_review }} отзывов</div>
+                            </div>
+                            {% for review in review_list %}
+                                <div class="comments__body">
+                                <div class="comments__item">
+                                    <div class="comment">
+                                        <div class="comment__header">
+                                            {% if  review.author.photo %}
+                                                <img
+                                                        class="comment__image"
+                                                        src="{{ review.author.photo.url }}"
+                                                        alt="marat-123"
+                                                />
+                                            {% else %}
+                                                <img
+                                                        class="comment__image"
+                                                        src="{% static 'default_ava.jpg' %}"
+                                                        alt="marat-123"
+                                                />
+                                            {% endif %}
+                                            <div class="comment__user">
+                                                <label class="comment__username">{{ review.author.name }} {{ review.author.surname }}</label>
+                                                <p>Оценка: <span>{{ review.rating }}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="comment__body">
+                                            <p class="comment__content">
+                                                {{ review.body }}
+                                            </p>
+                                        </div>
+                                        <div class="comment__date">Дата публикации: {{ review.pub_date }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        </div>
+                </div>
+            </div>
+            {% if regulations_list %}
+                <div class="room__bullet-list">
+                <h2 class="room__header room__bullet-header">Правила</h2>
+                <div class="bullet-list">
+                {% for regulation in regulations_list %}
+                    <ul class="bullet-list__content">
+                    <li class="bullet-list__item">{{ regulation.regulation }}</li>
+                {% endfor %}
             {% endif %}
-        {{ review.author.name }} {{ review.author.surname }} <br>
-        {{ review.body }}<br>
-        Рейтинг: {{ review.rating }}<br>
-        Дата публикации: {{ review.pub_date }}<br><br>
-    {% endfor %}
-    {% else %}
-    Пока нет отзывов
-{% endif %}
-<p><a href="{% url 'all_rooms' %}{% urlparams page=page%}">Назад</a></p>
-</body>
-</html>
+            </ul>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

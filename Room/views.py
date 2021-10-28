@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.views.generic import TemplateView, ListView, DetailView
+
 from Room.forms import AddReview
 from Room.models import Room, Reserve, Review, Regulations
 from Room.reserve_functions import check_availability, number_of_days, dates_of_user, average_rating, send_email, \
@@ -10,39 +13,42 @@ from Room.reserve_functions import check_availability, number_of_days, dates_of_
 import datetime as DT
 
 
-def all_rooms(request):
+class AllRooms(ListView):
     """ Список всех существующих комнат с пагинацией"""
-    rooms_list = Room.objects.all().order_by('number')
-    paginator = Paginator(rooms_list, 3)  # 3 поста на каждой странице
-    page = request.GET.get('page')
-    try:
-        rooms = paginator.page(page)
-    except PageNotAnInteger:
-        # Если страница не является целым числом, поставим первую страницу
-        rooms = paginator.page(1)
-    except EmptyPage:
-        # Если страница больше максимальной, доставить последнюю страницу результатов
-        rooms = paginator.page(paginator.num_pages)
-    return render(request, 'rooms/all_rooms.html', {'page': page, 'rooms': rooms})
+    context_object_name = 'rooms'
+    queryset = Room.objects.all().order_by('number')
+    template_name = "rooms/all_rooms.html"
+    paginate_by = 6
 
 
-def detail_room(request, number):
+class DetailRoom(DetailView):
     """ Информация по отдельной комнате """
-    room = get_object_or_404(Room, number=number)
-    regulations_list = Regulations.objects.filter(type_room=room.type)
-    review_list = Review.objects.filter(room=room).order_by('-pub_date')
-    num_of_review = len(review_list)
-    page = request.GET.get('page')
+    model = Room
+    context_object_name = "room"
+    template_name = "rooms/detail_room.html"
 
-    return render(request, 'rooms/detail_room.html',
-                  {'room': room, 'page': page, 'review_list': review_list,
-                   'num_of_review': num_of_review, 'regulations_list': regulations_list})
+    def get_object(self, queryset=None):
+        return Room.objects.get(number=self.kwargs.get("number"))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['regulations_list'] = Regulations.objects.filter(type_room=self.get_object().type)
+        context['review_list'] = Review.objects.filter(room=self.get_object()).order_by('-pub_date')
+        context['num_of_review'] = len(context['review_list'])
+        return context
 
 
-def help_page(request):
-    """ Информация по отдельной комнате """
+class HelpPage(TemplateView):
+    template_name = "rooms/help_page.html"
 
-    return render(request, 'rooms/help_page.html', )
+
+class AllReserves(LoginRequiredMixin, ListView):
+    """ Вывод всех броней пользователя"""
+    context_object_name = 'reserve_list'
+    template_name = "rooms/all_reserves.html"
+
+    def get_queryset(self):
+        return Reserve.objects.filter(client=self.request.user).order_by('-id')
 
 
 def cancel(request, pk):
@@ -68,24 +74,7 @@ def cancel(request, pk):
         reserve.delete()
         send_email_cancel(request.user.email)
         return redirect('all_reserves')
-    return render(request, 'rooms/cancel.html', {'message': message, 'delay':delay})
-
-
-@login_required(login_url="login")
-def all_reserves(request):
-    """ Вывод всех броней пользователя"""
-    reserve_list = Reserve.objects.filter(client=request.user).order_by('-id')
-    paginator = Paginator(reserve_list, 3)  # 3 поста на каждой странице
-    page = request.GET.get('page')
-    try:
-        reserves = paginator.page(page)
-    except PageNotAnInteger:
-        # Если страница не является целым числом, поставим первую страницу
-        reserves = paginator.page(1)
-    except EmptyPage:
-        # Если страница больше максимальной, доставить последнюю страницу результатов
-        reserves = paginator.page(paginator.num_pages)
-    return render(request, 'rooms/all_reserves.html', {'page': page, 'reserves': reserves, })
+    return render(request, 'rooms/cancel.html', {'message': message, 'delay': delay})
 
 
 @login_required(login_url="login")
@@ -102,7 +91,7 @@ def pay(request, number):
             reserve.save()
             message = 'Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. Так ' \
                       'же информацию о брони вы можете посмотреть в разделе "Мои резервы". '
-            send_email(request.user.name, request.user.patronymic, reserve.room, reserve.day_in, reserve.day_out,
+            send_email(request.user.name, reserve.room, reserve.day_in, reserve.day_out,
                        reserve.number_of_guests, request.user.email)
         else:
             message = 'Ошибка оплаты.'
@@ -148,7 +137,7 @@ def list_free_rooms(request):
         if check_availability(room, day_in, day_out):
             free_rooms.append(room)
     if dates_of_user(request.user, day_in, day_out):
-        paginator = Paginator(free_rooms, 3)  # 3 поста на каждой странице
+        paginator = Paginator(free_rooms, 6)
         page = request.GET.get('page')
         try:
             rooms = paginator.page(page)

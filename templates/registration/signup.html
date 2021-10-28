@@ -1,18 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Регистрация</title>
-</head>
-<body>
-<h2>Регистрация</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">
-        Зарегистрироваться
-    </button>
-</form>
-<p><a href="{% url "login" %}">Войти</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <div class="registration">
+        <form class="register-card" action="#" method="post">
+            <h1 class="register-card__header">Регистрация аккаунта</h1>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="register-card__send"><br>
+                <button class="button button_directed button_high" type="submit">
+                    <div class="button__content">Зарегистрироваться</div>
+                </button>
+            </div>
+            <div class="register-card__help">
+                <p class="register-card__text">Уже есть аккаунт?</p>
+                <a
+                        class="button button_ghostly button_high button_wide"
+                        href="{% url "login" %}"
+                ><div class="button__content">Войти</div></a
+                >
+            </div>
+        </form>
+    </div>
+{% endblock %}

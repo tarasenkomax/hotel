@@ -1,26 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <title>Акканут</title>
-</head>
-<body>
+{% block content %}
+    <div class="self-area">
+        <div class="self-area-card">
+            <h1 class="recovery-pass__header">
+                Добро пожаловать в личный кабинет
+            </h1>
+            <div class="self-area-card__fields">
+                <div class="self-area-card__left">
+                    <div class="self-area-card__top">
+                        <ul>
+                            <li><a href="{% url 'account' %}">Личный кабинет</a></li>
+                            <li><a href="{% url 'account_settings' %}">Настройки</a></li>
+                            <li><a href="{% url 'all_reserves' %}">Мои резервы</a></li>
+                            <li><a href="{% url 'logout' %}">Выход</a></li>
+                        </ul>
+                    </div>
+                    <div class="self-area-card__bottom">
+                        <div class="self-area-card__bt">
+                            <h2>Данные пользователя</h2>
+                        </div>
+                        <div class="self-area-card__bb">
+                            <div class="self-area-card__bb-left">
+                                <p>Фамилия: {{ user.surname }}</p>
+                                <p>Имя: {{ user.name }}</p>
+                            </div>
+                            <div class="self-area-card__bb-right">
+                                <p>Почта : {{ user.email }}</p>
+                                <p>Дата рождения: {{ user.date_of_birth }}</p>
+                                <p>Телефон: {{user.phone }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="self-area-card__right">
+                    <div class="self-area-card__img">
+                        {% if user.photo %}
+                            <img width="150" height="150" src="{{ user.photo.url }}" alt="avatar">
+                        {% else %}
+                            <img src="{% static 'default_ava.jpg' %}" alt="Аватарка" />
+                        {% endif %}
 
-<h3>Личный кабнет</h3>
-{% if photo %}
-    <img width="150" height="150" src="{{ photo.url }}" alt="avatar">
-{% else %}
-    <img width="150" height="150" src="{% static 'default_ava.jpg' %}" alt="avatar">
-{% endif %}
-<p>Фамилия: {{ surname }}</p>
-<p>Имя: {{ name }}</p>
-<p>Отчество: {{ patronymic }}</p>
-<p>Почта: {{ email }}</p>
-<p>Дата рождения: {{ date_of_birth }}</p>
-<p>Телефон: {{ phone }}</p>
-<p><a href="{% url 'home' %}">На главную</a></p>
-<p><a href="{% url 'account_settings' %}">Настройки</a></p>
-<p><a href="{% url 'logout' %}">Выход</a></p>
-</body>
-</html>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

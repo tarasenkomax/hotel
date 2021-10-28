@@ -1,5 +1,3 @@
-import re
-
 from Room.models import Review
 from django import forms
 

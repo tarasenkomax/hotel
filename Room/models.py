@@ -4,7 +4,7 @@ from Account.models import CustomUser
 
 
 def catalog_of_photo_rooms(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    """ Папка для хранения фотографий комнат """
     return 'rooms/{0}/{1}'.format(instance.room.number, filename)
 
 

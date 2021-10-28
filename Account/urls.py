@@ -44,9 +44,8 @@ urlpatterns = [
 
     # -----ЛИЧНЫЙ КАБИНЕТ-----
 
-    path('account/', views.account, name='account'),
+    path('account/', views.Account.as_view(), name='account'),
     path('account_settings/', views.account_settings, name='account_settings'),
 
 ]
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
