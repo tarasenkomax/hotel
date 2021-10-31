@@ -83,12 +83,11 @@
                 </div>
                 <a class="button button_directed button_high" href={% url 'pay' room.number %}{% urlparams full_price=full_price day_in=day_in day_out=day_out number_of_guests=number_of_guests %}
                 ><div class="button__content">Забронировать</div></a
-                ><a href="{% url 'list_free_rooms' %}{% urlparams page=page.previous_page_number day_in=day_in day_out=day_out number_of_guests=number_of_guests %}"
+                ><a href="#" onclick="window.history.back()"
 
             ><div class="button__content_isLight" >
                 Вернуться к списку комнат
-            </div></a
-            >
+            </div></a>
             </div>
         </div>
         <div class="room__comments">

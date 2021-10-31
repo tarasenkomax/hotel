@@ -22,11 +22,12 @@
 
                             <div class="options-card__elem">
                                 {% csrf_token %}
-                                {{ form.name}}
-                                {{ form.surname}}
-                                {{ form.date_of_birth}}
-                                {{ form.phone}}
-                                {{ form.photo}}
+                                {% for field in form %}
+                                    <font color="red">{{ field.errors }}</font>
+                                    {{ field.label_tag }} {{ field }}
+
+                                {% endfor %}
+
                                 <div class="options-card__footer">
                                     <img src="{% static './assets/images/key.png' %}" alt="key" /><a href="{% url 'password_change' %}"
                                 >Изменить пароль учетной записи</a

@@ -1,7 +1,7 @@
 import re
 
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
-from django.utils.translation import  gettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django import forms
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -15,6 +15,7 @@ class CustomUserCreationForm(UserCreationForm):
         error_messages = {
             'password_mismatch': _('Пароли не совпадают'),
         }
+
     password1 = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -47,8 +48,6 @@ class CustomUserCreationForm(UserCreationForm):
         return surname
 
 
-
-
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
@@ -64,6 +63,7 @@ class UserSettingsForm(forms.ModelForm):
                   'phone',
                   'photo')
 
+    # TODO дублирование кода
     def clean_name(self):
         name = self.cleaned_data['name']
         if re.search(r'[.,:;!_*+()/#¤%&]', name):

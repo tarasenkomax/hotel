@@ -255,6 +255,7 @@ class NotNumericPasswordValidator:
     def get_help_text(self):
         return _('')
 
+
 class SpecialCharactersPasswordValidator:
 
     def validate(self, password, user=None):
@@ -266,4 +267,3 @@ class SpecialCharactersPasswordValidator:
 
     def get_help_text(self):
         return _('Пароль не должен содержать специальных символов.')
-

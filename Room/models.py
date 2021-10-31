@@ -96,7 +96,7 @@ class Review(models.Model):
     body = models.TextField(blank=True, null=True, verbose_name='Отзыв')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Автор')
     reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE, null=True, verbose_name='Резерв ID')
-    pub_date = models.DateField(null=True, verbose_name='Дата публикации')
+    pub_date = models.DateField(auto_now_add=True, null=True, verbose_name='Дата публикации', )
 
     def __str__(self):
         return str(self.room)

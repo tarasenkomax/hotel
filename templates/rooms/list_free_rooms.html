@@ -292,9 +292,25 @@
                 </div>
                 {% endfor %}
             </div>
-                    <div class="searched-rooms__pagination">
-            {% include "../pagination_for_list_free_rooms.html" with page=rooms %}
-                    </div>
+                    {% if is_paginated %}
+                        <div class="searched-rooms__pagination">
+                            <div class="pagination">
+                                <div class="pagination__items">
+                                    {% if page_obj.has_previous %}
+                                        <a class="pagination__item pagination__item_leftarrow"
+                                           href="{% urlparams page=page_obj.previous_page_number day_in=day_in day_out=day_out number_of_guests=number_of_guests %}"></a>
+                                    {% endif %}
+                                    <div class="pagination__item">{{ page_obj.number }}</div>
+                                    <div class="pagination__item">из</div>
+                                    <div class="pagination__item">{{ page_obj.paginator.num_pages }}</div>
+                                    {% if page_obj.has_next %}
+                                        <a class="pagination__item pagination__item_arrow"
+                                        href="{% urlparams page=page_obj.next_page_number day_in=day_in day_out=day_out number_of_guests=number_of_guests %}"></a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
             {% endblock %}
         </div>
     </div>

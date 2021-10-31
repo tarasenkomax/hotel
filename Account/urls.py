@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
@@ -10,7 +8,6 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # ----- AUTH -----
-
     path('signup', views.SignUp.as_view(), name='signup'),
     path('login', auth_views.LoginView.as_view(authentication_form=AuthenticationUserForm), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
@@ -32,20 +29,17 @@ urlpatterns = [
          name='password_reset_complete'),
 
     # -----СМЕНА ПАРОЛЯ-----
-
     path('account/password-change/',
          auth_views.PasswordChangeView.as_view(template_name='password_change/password_change.html'),
          name='password_change'),
-
     path('account/password-change-done/',
          auth_views.PasswordChangeDoneView.as_view(template_name='password_change/password_change_done.html'),
          name='password_change_done'),
 
 
     # -----ЛИЧНЫЙ КАБИНЕТ-----
-
     path('account/', views.Account.as_view(), name='account'),
-    path('account_settings/', views.account_settings, name='account_settings'),
+    path('account_settings/', views.AccountSetting.as_view(), name='account_settings'),
 
 ]
 
