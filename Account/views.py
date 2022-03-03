@@ -53,7 +53,6 @@ def home(request):
     """ Домашняя страница """
     error = ''
     if request.method == 'POST':
-        print(request.POST)
         if request.POST['day_in'] and request.POST['day_out'] and request.POST['number_of_guests']:
             day_in = DT.datetime.strptime(request.POST['day_in'], '%d.%m.%Y').date()
             day_out = DT.datetime.strptime(request.POST['day_out'], '%d.%m.%Y').date()
