@@ -15,10 +15,8 @@ def check_availability(room, day_in, day_out):
     for reserve in reserve_list:
         if not (reserve.day_in >= day_out or reserve.day_out <= day_in):
             counter_false += 1
-    if counter_false > 0:
-        return False
-    else:
-        return True
+    return False if counter_false > 0 else True
+
 
 
 def number_of_days(day_in, day_out):
@@ -44,14 +42,8 @@ def dates_of_user(instance, day_in, day_out):
         return True
     else:
         for reserve in reserve_list:
-            if reserve.day_in >= day_out or reserve.day_out <= day_in:
-                counter += 0
-            else:
-                counter += 1
-    if counter <= 0:
-        return True
-    else:
-        return False
+            counter += 0 if reserve.day_in >= day_out or reserve.day_out <= day_in else 1
+        return True if counter <= 0 else False
 
 
 def send_email(name, room, day_in, day_out, number_of_guests, recipient):
