@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import variables
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -57,7 +56,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Hotel_db',
-        'USER': 'maksim',
+        'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -90,8 +89,6 @@ AUTH_USER_MODEL = 'Account.CustomUser'
 
 # ----- SMTP -----
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = variables.EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = variables.EMAIL_HOST_PASSWORD
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

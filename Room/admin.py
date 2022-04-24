@@ -23,7 +23,7 @@ class GalleryInLine(admin.StackedInline):
 
 class RoomAdmin(admin.ModelAdmin):
     """ Команты """
-    list_display = ('number', 'type', 'price', 'number_of_guests', 'rating')
+    list_display = ('number', 'type', 'price', 'number_of_guests')
     list_display_links = ('number',)
     search_fields = ('number',)
     list_filter = ('number_of_guests', 'type',)

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg
 
 from Account.models import CustomUser
 
@@ -40,10 +41,14 @@ class Room(models.Model):
     type = models.ForeignKey(TypeRoom, on_delete=models.PROTECT, null=True, verbose_name='Тип')
     price = models.IntegerField(null=True, verbose_name='Цена', help_text='указывать в рублях')
     number_of_guests = models.IntegerField(null=True, verbose_name='Количество гостей')
-    rating = models.FloatField(null=True, verbose_name='Средний рейтинг')
 
     def __str__(self):
         return str(self.number)
+
+    def get_average_rating(self):
+        return Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
+
+
 
     class Meta:
         verbose_name_plural = 'Комнаты'
@@ -62,7 +67,6 @@ class Gallery(models.Model):
                                       verbose_name='Фото 3', help_text='Фотография будет отображаться в слайдере')
     slider_photo4 = models.ImageField(upload_to=catalog_of_photo_rooms, blank=True, null=True,
                                       verbose_name='Фото 4', help_text='Фотография будет отображаться в слайдере')
-    photo5 = models.ImageField(upload_to=catalog_of_photo_rooms, blank=True, null=True, verbose_name='Фото 5')
 
     def __str__(self):
         return str(self.room)

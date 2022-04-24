@@ -66,13 +66,8 @@
                             <div class="room-card__rating">
                                 <div class="room-card__text">{{ room.type }}</div>
                                 <div class="room-card__reviews">
-                                    <p class="room-card__postfix">Рейтинг </p>
-                                    {% if room.rating %}
-                                        <label class="room-card__count"> {{ room.rating }}</label>
-                                    {% else %}
-                                        <label class="room-card__count"> 5,0</label>
-                                    {% endif %}
-
+                                    <p class="room-card__postfix">Рейтинг</p>
+                                        <label class="room-card__count"> {{ room.get_average_rating|default_if_none:"5.0" }}</label>
                                 </div>
                             </div>
                         </a>
@@ -82,22 +77,22 @@
 
             {% if is_paginated %}
                 <div class="searched-rooms__pagination">
-                <div class="pagination">
-                <div class="pagination__items">
-                    {% if page_obj.has_previous %}
-                        <a class="pagination__item pagination__item_leftarrow"
-                           href="/all_rooms?page={{ page_obj.previous_page_number }}"></a>
-                    {% endif %}
-                    <div class="pagination__item">{{ page_obj.number }}</div>
-                    <div class="pagination__item">из</div>
-                    <div class="pagination__item">{{ page_obj.paginator.num_pages }}</div>
-                    {% if page_obj.has_next %}
-                        <a class="pagination__item pagination__item_arrow"
-                           href="/all_rooms?page={{ page_obj.next_page_number }}"></a>
-                    {% endif %}
+                    <div class="pagination">
+                        <div class="pagination__items">
+                            {% if page_obj.has_previous %}
+                                <a class="pagination__item pagination__item_leftarrow"
+                                   href="/all_rooms?page={{ page_obj.previous_page_number }}"></a>
+                            {% endif %}
+                            <div class="pagination__item">{{ page_obj.number }}</div>
+                            <div class="pagination__item">из</div>
+                            <div class="pagination__item">{{ page_obj.paginator.num_pages }}</div>
+                            {% if page_obj.has_next %}
+                                <a class="pagination__item pagination__item_arrow"
+                                   href="/all_rooms?page={{ page_obj.next_page_number }}"></a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
             {% endif %}
         </div>
     </div>

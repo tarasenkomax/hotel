@@ -53,10 +53,7 @@ class AddReview(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('all_reserves')
 
     def post(self, request, *args, **kwargs):
-        # TODO средний рейтинг расчитывается раньше, чем добавляется новый отзыв
         room = self.get_object().room
-        room.rating = round(
-            Review.objects.filter(room=self.get_object().room).aggregate(Avg('rating'))['rating__avg'], 1)
         room.save()
         return super().post(request, *args, **kwargs)
 
@@ -90,7 +87,6 @@ class ReserveRoom(LoginRequiredMixin, DetailView):
         return get_object_or_404(Room, number=self.kwargs.get("number"))
 
     def get_context_data(self, **kwargs):
-        # TODO дублирование кода
         context = super().get_context_data(**kwargs)
         context['regulations_list'] = Regulations.objects.filter(type_room=self.get_object().type)
         context['review_list'] = Review.objects.filter(room=self.get_object()).order_by('-pub_date')
