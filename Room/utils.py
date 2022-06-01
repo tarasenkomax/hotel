@@ -1,14 +1,15 @@
 import datetime as DT
+from typing import Union
+
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
+
 from Room.models import Reserve, Room
 
 
-def convert_str_to_date(date_str: str) -> DT.date:
+def convert_str_to_date(date_str: Union[DT.date, str]) -> DT.date:
     """ Конвертировать строку 'ГГГГ-ММ-ДД' в datetime.date """
-    if isinstance(date_str, str):
-        return DT.datetime.strptime(date_str, '%Y-%m-%d').date()
-    else:
-        return date_str
+    return DT.datetime.strptime(date_str, '%Y-%m-%d').date() if isinstance(date_str, str) else date_str
 
 
 def check_availability(room: Room, day_in: DT.date, day_out: DT.date) -> bool:
@@ -28,9 +29,8 @@ def get_number_of_days(day_in: DT.date, day_out: DT.date) -> int:
     return (day_out - day_in).days
 
 
-def check_dates_of_user(instance, day_in: DT.date, day_out: DT.date) -> bool:
+def check_dates_of_user(user: User, day_in: DT.date, day_out: DT.date) -> bool:
     """ Проверка на наличие у пользователя существующих резервов на эти даты"""
-    user = instance
     counter = 0
     reserve_list = Reserve.objects.filter(client=user)
     if len(reserve_list) == 0:
@@ -46,11 +46,9 @@ def send_email(name, room, day_in: DT.date, day_out: DT.date, number_of_guests, 
     email_theme = 'Дипломная работа'
     email_text = 'Здравствуйте, {}, ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
                  '------\n Комната: {}\n Прибытие: {}.\n Выезд: {}.\n Количество гостей: {}\n Желаем вам ' \
-                 'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, room,
-                                                                                          day_in, day_out,
+                 'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, room, day_in, day_out,
                                                                                           number_of_guests)
-    send_mail(email_theme, email_text, 'djangotest97@gmail.com', [str(recipient)],
-              fail_silently=False)
+    send_mail(email_theme, email_text, 'djangotest97@gmail.com', [str(recipient)], fail_silently=False)
 
 
 def send_email_cancel(recipient):

@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Avg
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
@@ -134,10 +133,7 @@ class Cancel(LoginRequiredMixin, DeleteView):
                 context['days'] = get_number_of_days(DT.datetime.now().date(), self.get_object().day_out)
                 context['delay'] = False
         cost = self.get_object().room.price * context['days']
-        context['message'] = 'Вам вернется стоимость за {} дней с {} по {} в размере {} рублей.'.format(context['days'],
-                                                                                                        self.get_object().day_in,
-                                                                                                        self.get_object().day_out,
-                                                                                                        cost)
+        context['message'] = f"Вам вернется стоимость за {context['days']} дней с {self.get_object().day_in} по {self.get_object().day_out} в размере {cost} рублей. "
         return context
 
 
@@ -171,7 +167,6 @@ class ListFreeRooms(ListView, LoginRequiredMixin):
 
 class Pay(LoginRequiredMixin, View):
     """ Оплата брони (заглушка)"""
-
     def get(self, request, *args, **kwargs):
         if check_dates_of_user(request.user,
                                convert_str_to_date(request.GET['day_in']),
