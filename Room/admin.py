@@ -11,7 +11,7 @@ class HotelAdmin(admin.ModelAdmin):
 
 class ReviewAdmin(admin.ModelAdmin):
     """ Отзывы """
-    list_display = ( 'room', 'reserve', 'author', 'rating', 'body', 'pub_date')
+    list_display = ('room', 'reserve', 'author', 'rating', 'body', 'pub_date')
     list_display_links = ('room',)
     list_filter = ('room',)
 
@@ -33,8 +33,8 @@ class RoomAdmin(admin.ModelAdmin):
 
 class TypeRoomAdmin(admin.ModelAdmin):
     """ Типы комнат"""
-    list_display = ('nomination', 'description',)
-    list_display_links = ('nomination',)
+    list_display = ('code', 'nomination', 'description',)
+    list_display_links = ('code', 'nomination',)
 
 
 class GalleryAdmin(admin.ModelAdmin):

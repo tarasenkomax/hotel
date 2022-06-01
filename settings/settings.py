@@ -7,7 +7,35 @@ SECRET_KEY = '(j9^*l+nq1hzte8xm_4aq7s3yp#altwpiqe8tq#n*(##-j!cr='
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+if DEBUG:
+    LOGGING = {
+        'disable_existing_loggers': False,
+        'version': 1,
+        'handlers': {
+            'console': {
+                # logging handler that outputs log messages to terminal
+                'class': 'logging.StreamHandler',
+                'level': 'DEBUG',  # message level to be written to console
+            },
+        },
+        'loggers': {
+            'django.db.backends': {
+                # this sets root level logger to log debug and higher level
+                # logs to console. All other loggers inherit settings from
+                # root level logger.
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,  # this tells logger to send logging message
+                # to its parent (will send if set to True)
+            },
+            'django.db': {
+                # django also has database level logging
+            },
+        },
+    }
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,7 +83,7 @@ WSGI_APPLICATION = 'settings.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Hotel_db',
+        'NAME': 'HotelDB',
         'USER': 'postgres',
         'PASSWORD': '1234',
         'HOST': 'localhost',

@@ -23,6 +23,7 @@ class Hotel(models.Model):
 
 class TypeRoom(models.Model):
     """ Модель типа комнаты """
+    code = models.SmallIntegerField(primary_key=True, verbose_name='Код')
     nomination = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Наименование')
     description = models.CharField(max_length=300, blank=True, null=False, verbose_name='Описание')
 
@@ -47,8 +48,6 @@ class Room(models.Model):
 
     def get_average_rating(self):
         return Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
-
-
 
     class Meta:
         verbose_name_plural = 'Комнаты'
