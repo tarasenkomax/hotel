@@ -10,7 +10,7 @@ from django.views.generic import DetailView, UpdateView
 
 from Account.forms import CustomUserCreationForm, UserSettingsForm
 from Account.models import CustomUser
-from Room.reserve_functions import dates_of_user
+from Room.utils import check_dates_of_user
 
 
 class Account(LoginRequiredMixin, DetailView):
@@ -57,7 +57,7 @@ def home(request):
             day_in = DT.datetime.strptime(request.POST['day_in'], '%d.%m.%Y').date()
             day_out = DT.datetime.strptime(request.POST['day_out'], '%d.%m.%Y').date()
             number_of_guests = int(request.POST['number_of_guests'][0])
-            if dates_of_user(request.user, day_in, day_out):
+            if check_dates_of_user(request.user, day_in, day_out):
                 return redirect(f'/list_free_rooms?day_in={day_in}&day_out={day_out}&number_of_guests={number_of_guests}')
             else:
                 error = 'У вас есть бронь пересекающаяся с выбранными датами'

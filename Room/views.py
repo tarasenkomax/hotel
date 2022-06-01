@@ -8,7 +8,8 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView
 
 from Room.forms import ReviewForm
 from Room.models import Room, Reserve, Review, Regulations
-from Room.reserve_functions import check_availability, number_of_days, dates_of_user, send_email, send_email_cancel
+from Room.utils import check_availability, get_number_of_days, check_dates_of_user, send_email, send_email_cancel, \
+    convert_str_to_date
 import datetime as DT
 
 
@@ -94,7 +95,8 @@ class ReserveRoom(LoginRequiredMixin, DetailView):
         context['day_in'] = self.request.GET['day_in']
         context['day_out'] = self.request.GET['day_out']
         context['number_of_guests'] = self.request.GET['number_of_guests']
-        context['days'] = number_of_days(self.request.GET['day_in'], self.request.GET['day_out'])
+        context['days'] = get_number_of_days(convert_str_to_date(self.request.GET['day_in']),
+                                             convert_str_to_date(self.request.GET['day_out']))
         context['full_price'] = self.get_object().price * context['days']
         return context
 
@@ -119,17 +121,17 @@ class Cancel(LoginRequiredMixin, DeleteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if DT.datetime.now().date() < self.get_object().day_in:
-            context['days'] = number_of_days(self.get_object().day_in, self.get_object().day_out)
+            context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out)
             context['delay'] = False
         elif DT.datetime.now().date() == self.get_object().day_in:
-            context['days'] = number_of_days(self.get_object().day_in, self.get_object().day_out) - 1
+            context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out) - 1
             context['delay'] = False
         else:
             if DT.datetime.now().date() > self.get_object().day_out:
                 context['days'] = 0
                 context['delay'] = True
             else:
-                context['days'] = number_of_days(DT.datetime.now().date(), self.get_object().day_out)
+                context['days'] = get_number_of_days(DT.datetime.now().date(), self.get_object().day_out)
                 context['delay'] = False
         cost = self.get_object().room.price * context['days']
         context['message'] = 'Вам вернется стоимость за {} дней с {} по {} в размере {} рублей.'.format(context['days'],
@@ -150,9 +152,13 @@ class ListFreeRooms(ListView, LoginRequiredMixin):
             'number')
         qs = []
         for room in free_rooms_list:
-            if check_availability(room, self.request.GET['day_in'], self.request.GET['day_out']):
+            if check_availability(room,
+                                  convert_str_to_date(self.request.GET['day_in']),
+                                  convert_str_to_date(self.request.GET['day_out'])):
                 qs.append(room)
-        if dates_of_user(self.request.user, self.request.GET['day_in'], self.request.GET['day_out']):
+        if check_dates_of_user(self.request.user,
+                               convert_str_to_date(self.request.GET['day_in']),
+                               convert_str_to_date(self.request.GET['day_out'])):
             return qs
 
     def get_context_data(self, **kwargs):
@@ -167,7 +173,9 @@ class Pay(LoginRequiredMixin, View):
     """ Оплата брони (заглушка)"""
 
     def get(self, request, *args, **kwargs):
-        if dates_of_user(request.user, request.GET['day_in'], request.GET['day_out']):
+        if check_dates_of_user(request.user,
+                               convert_str_to_date(request.GET['day_in']),
+                               convert_str_to_date(request.GET['day_out'])):
             reserve = Reserve(day_in=request.GET['day_in'],
                               day_out=request.GET['day_out'],
                               room=get_object_or_404(Room, number=self.kwargs.get("number")),

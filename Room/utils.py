@@ -1,42 +1,38 @@
 import datetime as DT
 from django.core.mail import send_mail
-from Room.models import Reserve
+from Room.models import Reserve, Room
 
 
-def check_availability(room, day_in, day_out):
+def convert_str_to_date(date_str: str) -> DT.date:
+    """ Конвертировать строку 'ГГГГ-ММ-ДД' в datetime.date """
+    if isinstance(date_str, str):
+        return DT.datetime.strptime(date_str, '%Y-%m-%d').date()
+    else:
+        return date_str
+
+
+def check_availability(room: Room, day_in: DT.date, day_out: DT.date) -> bool:
     """ Проверка, не пересекаются ли даты резрва отдельной комнаты с указанными данными """
     reserve_list = Reserve.objects.filter(room=room)
     counter_false = 0
     if len(reserve_list) == 0:
         return True
-    if (type(day_in) or type(day_out)) == str:
-        day_in = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
-        day_out = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
     for reserve in reserve_list:
         if not (reserve.day_in >= day_out or reserve.day_out <= day_in):
             counter_false += 1
     return False if counter_false > 0 else True
 
 
-def number_of_days(day_in, day_out):
+def get_number_of_days(day_in: DT.date, day_out: DT.date) -> int:
     """ Подсчет количества дней"""
-    if type(day_in) == str:
-        day_in = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
-    if type(day_out) == str:
-        day_out = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
-    days = day_out - day_in
-    return days.days
+    return (day_out - day_in).days
 
 
-def dates_of_user(instance, day_in, day_out):
+def check_dates_of_user(instance, day_in: DT.date, day_out: DT.date) -> bool:
     """ Проверка на наличие у пользователя существующих резервов на эти даты"""
     user = instance
     counter = 0
     reserve_list = Reserve.objects.filter(client=user)
-    if type(day_in) == str:
-        day_in = DT.datetime.strptime(day_in, '%Y-%m-%d').date()
-    if type(day_out) == str:
-        day_out = DT.datetime.strptime(day_out, '%Y-%m-%d').date()
     if len(reserve_list) == 0:
         return True
     else:
@@ -45,7 +41,7 @@ def dates_of_user(instance, day_in, day_out):
         return True if counter <= 0 else False
 
 
-def send_email(name, room, day_in, day_out, number_of_guests, recipient):
+def send_email(name, room, day_in: DT.date, day_out: DT.date, number_of_guests, recipient):
     """ Отправка письма о подтверждении брони """
     email_theme = 'Дипломная работа'
     email_text = 'Здравствуйте, {}, ваша заявка на бронирование одобрена.\n ------ Детали бронирования ' \
