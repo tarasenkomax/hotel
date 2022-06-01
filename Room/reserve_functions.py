@@ -18,7 +18,6 @@ def check_availability(room, day_in, day_out):
     return False if counter_false > 0 else True
 
 
-
 def number_of_days(day_in, day_out):
     """ Подсчет количества дней"""
     if type(day_in) == str:

@@ -168,14 +168,15 @@ class Pay(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         if dates_of_user(request.user, request.GET['day_in'], request.GET['day_out']):
-            Reserve(day_in=request.GET['day_in'],
-                    day_out=request.GET['day_out'],
-                    room=get_object_or_404(Room, number=self.kwargs.get("number")),
-                    number_of_guests=request.GET['number_of_guests'],
-                    client=request.user).save()
+            reserve = Reserve(day_in=request.GET['day_in'],
+                              day_out=request.GET['day_out'],
+                              room=get_object_or_404(Room, number=self.kwargs.get("number")),
+                              number_of_guests=request.GET['number_of_guests'],
+                              client=request.user)
+            reserve.save()
             message = 'Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. Так ' \
                       'же информацию о брони вы можете посмотреть в разделе "Мои резервы". '
-            send_email(request.user.name, Reserve.room, Reserve.day_in, Reserve.day_out, Reserve.number_of_guests,
+            send_email(request.user.name, reserve.room, reserve.day_in, reserve.day_out, reserve.number_of_guests,
                        request.user.email)
         else:
             message = 'Ошибка оплаты.'
