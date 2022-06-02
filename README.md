@@ -24,7 +24,7 @@
    `python3.7 -m venv venv`
 3. Создать файл с переменными окружения согласно шаблону .env.sample в корне проекта
 4. Активировать виртуальное окружение  
-   `source venv/bin/activate`
+   `source venv/Scripts/activate`
 5. Установить зависимости  
    `pip install -r requirements.txt`
 6. Создать миграции  
