@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 
 from Room.models import Reserve, Room
+from settings import config
 
 
 def convert_str_to_date(date_str: Union[DT.date, str]) -> DT.date:
@@ -48,7 +49,7 @@ def send_email(name, room, day_in: DT.date, day_out: DT.date, number_of_guests, 
                  '------\n Комната: {}\n Прибытие: {}.\n Выезд: {}.\n Количество гостей: {}\n Желаем вам ' \
                  'хорошего отдыха.\n\n\n\n --\n С уважением, Администрация отеля.'.format(name, room, day_in, day_out,
                                                                                           number_of_guests)
-    send_mail(email_theme, email_text, 'djangotest97@gmail.com', [str(recipient)], fail_silently=False)
+    send_mail(email_theme, email_text, config.EMAIL_HOST_USER, [str(recipient)], fail_silently=False)
 
 
 def send_email_cancel(recipient):
@@ -56,5 +57,5 @@ def send_email_cancel(recipient):
     email_theme = 'Дипломная работа. Отмена бронирования.'
     email_text = 'Здравствуйте. Ваша заявка на отмену брони одобрена.\n\n\n\n --\n С уважением, ' \
                  'Администрация отеля.'
-    send_mail(email_theme, email_text, 'djangotest97@gmail.com', [str(recipient)],
+    send_mail(email_theme, email_text, config.EMAIL_HOST_USER, [str(recipient)],
               fail_silently=False)

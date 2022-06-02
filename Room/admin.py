@@ -45,9 +45,11 @@ class GalleryAdmin(admin.ModelAdmin):
 
 class ReserveAdmin(admin.ModelAdmin):
     """ Резервы комнат """
-    list_display = ('id', 'room', 'client', 'day_in', 'day_out', 'number_of_guests')
+    list_display = ('id', 'reg_date', 'room', 'client', 'day_in', 'day_out', 'number_of_guests')
     list_display_links = ('id',)
     list_filter = ('room',)
+    readonly_fields = ('reg_date',)
+    date_hierarchy = 'reg_date'
 
 
 class RegulationsAdmin(admin.ModelAdmin):
@@ -64,5 +66,5 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(TypeRoom, TypeRoomAdmin)
 admin.site.register(Gallery, GalleryAdmin)
 admin.site.register(Review, ReviewAdmin)
-admin.site.site_title = 'Панель Админимтратора Отеля'
+admin.site.site_title = 'Панель Администратора Отеля'
 admin.site.site_header = 'Панель Администратора Отеля'
