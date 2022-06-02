@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Avg
 
@@ -88,6 +89,15 @@ class Reserve(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def clean(self):
+        if self.day_in > self.day_out:
+            raise ValidationError(
+                {
+                    'day_in': "Дата заезда не может быть позже даты выезда",
+                    'day_out': "Дата выезда не может быть раньше даты заезда",
+                }
+            )
+
     class Meta:
         verbose_name_plural = 'Резервы комнат'
         verbose_name = 'Резерв комнаты'
@@ -104,6 +114,14 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.room)
+
+    def clean(self):
+        if 1 > self.rating or self.rating > 5:
+            raise ValidationError(
+                {
+                    'rating': "Рейтинг должен быть в диапазоне от 1 до 5",
+                }
+            )
 
     class Meta:
         verbose_name_plural = 'Отзывы комнат'
