@@ -4,17 +4,41 @@ from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 
 
-class CustomUserCreationForm(UserCreationForm):
+class CleanNameUser:
+    """ Миксин для валидации имени и фамилии пользователя """
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if re.search(r'[.,:;!_*+()/#¤%&]', name):
+            raise forms.ValidationError("Имя не должно содержать символы")
+        if re.search(r'[0123456789]', name):
+            raise forms.ValidationError("Имя не должно содержать цифры")
+        if re.search(r'\s', name):
+            raise forms.ValidationError("Имя не должно содержать пробелы")
+        return name
+
+    def clean_surname(self):
+        surname = self.cleaned_data['surname']
+        if re.search(r'[.,:;!_*+()/#¤%&]', surname):
+            raise forms.ValidationError("Фамилия не должна содержать символы")
+        if re.search(r'[0123456789]', surname):
+            raise forms.ValidationError("Фамилия не должна содержать цифры")
+        if re.search(r'\s', surname):
+            raise forms.ValidationError("Фамилия не должна содержать пробелы")
+        return surname
+
+
+class CustomUserCreationForm(UserCreationForm, CleanNameUser):
+    """ Форма создания пользователя """
+
     class Meta:
         model = CustomUser
         fields = ('email', 'surname', 'name', 'date_of_birth')
-        error_messages = {
-            'password_mismatch': _('Пароли не совпадают'),
-        }
+        error_messages = {'password_mismatch': _('Пароли не совпадают'), }
 
     password1 = forms.CharField(
         label=_("Password"),
@@ -27,34 +51,10 @@ class CustomUserCreationForm(UserCreationForm):
         strip=False,
     )
 
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        if re.search(r'[.,:;!_*+()/#¤%&]', name):
-            raise forms.ValidationError("Имя не должно содержать символы")
-        if re.search(r'[0123456789]', name):
-            raise forms.ValidationError("Имя не должно содержать цифры")
-        if re.search(r'\s', name):
-            raise forms.ValidationError("Имя не должно содержать пробелы")
-        return name
 
-    def clean_surname(self):
-        surname = self.cleaned_data['surname']
-        if re.search(r'[.,:;!_*+()/#¤%&]', surname):
-            raise forms.ValidationError("Фамилия не должна содержать символы")
-        if re.search(r'[0123456789]', surname):
-            raise forms.ValidationError("Фамилия не должна содержать цифры")
-        if re.search(r'\s', surname):
-            raise forms.ValidationError("Фамилия не должна содержать пробелы")
-        return surname
+class UserSettingsForm(forms.ModelForm, CleanNameUser):
+    """ Форма изменения личных данных пользователя """
 
-
-class CustomUserChangeForm(UserChangeForm):
-    class Meta:
-        model = CustomUser
-        fields = ('email',)
-
-
-class UserSettingsForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('surname',
@@ -63,29 +63,9 @@ class UserSettingsForm(forms.ModelForm):
                   'phone',
                   'photo')
 
-    # TODO дублирование кода
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        if re.search(r'[.,:;!_*+()/#¤%&]', name):
-            raise forms.ValidationError("Имя не должно содержать символы")
-        if re.search(r'[0123456789]', name):
-            raise forms.ValidationError("Имя не должно содержать цифры")
-        if re.search(r'\s', name):
-            raise forms.ValidationError("Имя не должно содержать пробелы")
-        return name
-
-    def clean_surname(self):
-        surname = self.cleaned_data['surname']
-        if re.search(r'[.,:;!_*+()/#¤%&]', surname):
-            raise forms.ValidationError("Фамилия не должна содержать символы")
-        if re.search(r'[0123456789]', surname):
-            raise forms.ValidationError("Фамилия не должна содержать цифры")
-        if re.search(r'\s', surname):
-            raise forms.ValidationError("Фамилия не должна содержать пробелы")
-        return surname
-
 
 class AuthenticationUserForm(AuthenticationForm):
+    """ Форма авторизации пользователя """
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}))
 
     error_messages = {

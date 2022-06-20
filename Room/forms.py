@@ -3,6 +3,7 @@ from django import forms
 
 
 class ReviewForm(forms.ModelForm):
+    """ Форма добавления отзыва """
     class Meta:
         model = Review
         fields = ('body',
