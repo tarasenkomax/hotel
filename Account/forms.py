@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser
 
 
-class CleanNameUser:
+class CleanNameUserMixin:
     """ Миксин для валидации имени и фамилии пользователя """
 
     def clean_name(self):
@@ -32,7 +32,7 @@ class CleanNameUser:
         return surname
 
 
-class CustomUserCreationForm(UserCreationForm, CleanNameUser):
+class CustomUserCreationForm(UserCreationForm, CleanNameUserMixin):
     """ Форма создания пользователя """
 
     class Meta:
@@ -52,7 +52,7 @@ class CustomUserCreationForm(UserCreationForm, CleanNameUser):
     )
 
 
-class UserSettingsForm(forms.ModelForm, CleanNameUser):
+class UserSettingsForm(forms.ModelForm, CleanNameUserMixin):
     """ Форма изменения личных данных пользователя """
 
     class Meta:
