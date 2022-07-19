@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'Room',
 
     'storages',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
