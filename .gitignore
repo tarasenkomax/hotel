@@ -87,6 +87,5 @@ venv/
 
 
 Account/__pycache__/
-Account/static/
 Room/__pycache__/
 /media/
