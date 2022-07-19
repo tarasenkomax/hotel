@@ -85,9 +85,8 @@ local_settings.py
 db.sqlite3
 venv/
 
-Account/migrations/
+
 Account/__pycache__/
 Account/static/
-Room/migrations/
 Room/__pycache__/
 /media/

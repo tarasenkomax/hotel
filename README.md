@@ -27,17 +27,15 @@
    `source venv/Scripts/activate`
 5. Установить зависимости  
    `pip install -r requirements.txt`
-6. Создать миграции  
-   `python manage.py makemigrations`
-7. Выполнить миграции  
+6. Выполнить миграции  
    `python manage.py migrate`
-8. Создать суперпользователя для доступа к панели администратора  
+7. Создать суперпользователя для доступа к панели администратора  
    `python manage.py createsuperuser`
-9. Запустить приложение  
+8. Запустить приложение  
    `python manage.py runserver`
-10. Запустить celery beat для периодических задач (рассылка писем и удаление старых броней)  
+9. Запустить celery beat для периодических задач (рассылка писем и удаление старых броней)  
    `celery -A settings beat`
-11. Запустить flower для отслеживания celery (необязательно)  
-   `flower -A settings --port=5555`
-12. Запустить celery для выполнения celery beat  
+10. Запустить flower для отслеживания celery (необязательно)  
+    `flower -A settings --port=5555`
+11. Запустить celery для выполнения celery beat  
    `celery -A settings worker --loglevel=INFO --concurrency 1 -P solo`
