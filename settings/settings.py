@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'Account',
-
     'Room',
+
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,7 @@ EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
 EMAIL_HOST = config.EMAIL_HOST
 EMAIL_USE_TLS = config.EMAIL_USE_TLS
 EMAIL_PORT = config.EMAIL_PORT
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 PASSWORD_RESET_TIMEOUT_DAYS = 2
 ACCOUNT_ACTIVATION_DAYS = 2
@@ -137,10 +138,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 CELERY_TIMEZONE = "Europe/Moscow"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
 CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+
+AWS_ACCESS_KEY_ID = config.AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY = config.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = config.AWS_STORAGE_BUCKET_NAME
+AWS_S3_ENDPOINT_URL = config.AWS_S3_ENDPOINT_URL
+AWS_S3_REGION_NAME = config.AWS_S3_REGION_NAME
+DEFAULT_FILE_STORAGE = "settings.storage_backends.MediaStorage"
