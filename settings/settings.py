@@ -101,10 +101,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'settings.custom_password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'settings.custom_password_validation.NotNumericPasswordValidator',
+        'NAME': 'settings.custom_password_validation.MaximumLengthValidator',
     },
     {
-        'NAME': 'settings.custom_password_validation.MaximumLengthValidator',
+        'NAME': 'settings.custom_password_validation.SpecialCharactersPasswordValidator',
     },
 ]
 
