@@ -4,7 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.utils.translation import gettext_lazy as _
 from django import forms
 
-from django.contrib.auth.forms import UserCreationForm
+from django_registration.forms import RegistrationForm
+
 from .models import CustomUser
 
 
@@ -32,10 +33,10 @@ class CleanNameUserMixin:
         return last_name
 
 
-class CustomUserCreationForm(UserCreationForm, CleanNameUserMixin):
+class CustomUserCreationForm(RegistrationForm, CleanNameUserMixin):
     """ Форма создания пользователя """
 
-    class Meta:
+    class Meta(RegistrationForm.Meta):
         model = CustomUser
         fields = ('email', 'last_name', 'first_name', 'date_of_birth')
         error_messages = {'password_mismatch': _('Пароли не совпадают'), }

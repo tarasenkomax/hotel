@@ -10,11 +10,7 @@ def user_directory_path(instance, filename):
 
 
 class CustomUserManager(BaseUserManager):
-    """ Пользовательский менеджер модели пользователя, где электронная почта является уникальным идентификатором для
-    аутентификации вместо имени пользователей """
-
     def create_user(self, email, password, **extra_fields):
-        """ Создает и сохраняет пользователя с указанным адресом электронной почты и паролем """
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -24,7 +20,6 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
-        """ Создает и сохраняет суперпользователя с указанным адресом электронной почты и паролем """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)

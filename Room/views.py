@@ -9,7 +9,7 @@ from Room.forms import ReviewForm
 from Room.models import Room, Reserve, Review, Regulations
 from Room.utils import check_availability, get_number_of_days, check_dates_of_user, send_email, send_email_cancel, \
     convert_str_to_date
-import datetime as DT
+import datetime
 
 
 class AllRooms(ListView):
@@ -116,24 +116,24 @@ class Cancel(LoginRequiredMixin, DeleteView):
         return reserve
 
     def post(self, request, *args, **kwargs):
-        if not DT.datetime.now().date() > self.get_object().day_out:
+        if not datetime.datetime.now().date() > self.get_object().day_out:
             send_email_cancel(request.user.email)
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if DT.datetime.now().date() < self.get_object().day_in:
+        if datetime.datetime.now().date() < self.get_object().day_in:
             context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out)
             context['delay'] = False
-        elif DT.datetime.now().date() == self.get_object().day_in:
+        elif datetime.datetime.now().date() == self.get_object().day_in:
             context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out) - 1
             context['delay'] = False
         else:
-            if DT.datetime.now().date() > self.get_object().day_out:
+            if datetime.datetime.now().date() > self.get_object().day_out:
                 context['days'] = 0
                 context['delay'] = True
             else:
-                context['days'] = get_number_of_days(DT.datetime.now().date(), self.get_object().day_out)
+                context['days'] = get_number_of_days(datetime.datetime.now().date(), self.get_object().day_out)
                 context['delay'] = False
         cost = self.get_object().room.price * context['days']
         context[

@@ -17,23 +17,17 @@ if DEBUG:
         'version': 1,
         'handlers': {
             'console': {
-                # logging handler that outputs log messages to terminal
                 'class': 'logging.StreamHandler',
-                'level': 'DEBUG',  # message level to be written to console
+                'level': 'DEBUG',
             },
         },
         'loggers': {
             'django.db.backends': {
-                # this sets root level logger to log debug and higher level
-                # logs to console. All other loggers inherit settings from
-                # root level logger.
                 'handlers': ['console'],
                 'level': 'DEBUG',
-                'propagate': False,  # this tells logger to send logging message
-                # to its parent (will send if set to True)
+                'propagate': False,
             },
             'django.db': {
-                # django also has database level logging
             },
         },
     }
@@ -48,9 +42,10 @@ INSTALLED_APPS = [
 
     'Account',
     'Room',
-
+    # 3rd
     'storages',
     'django_cleanup.apps.CleanupConfig',
+    'django_registration'
 ]
 
 MIDDLEWARE = [

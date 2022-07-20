@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div class="cancel-reserve-page">
+        <div class="cancel-reserve-page_block">
+            <h2>Вы успешно зарегистрированы!</h2>
+            <div style='display:flex; justify-content: center'>
+                <p style='margin-right:10px'>Теперь мы можете</p>
+                <a href="{% url 'login' %}">Войти</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
