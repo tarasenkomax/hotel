@@ -40,14 +40,12 @@ class CustomUser(AbstractUser):
     """ Кастомная модель пользователя """
     username = None
     email = models.EmailField(verbose_name='Почта', max_length=255, unique=True, )
-    name = models.CharField(max_length=50, blank=True, null=True, verbose_name='Имя')
-    surname = models.CharField(max_length=50, blank=True, null=True, verbose_name='Фамилия')
     phone = models.CharField(max_length=22, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
 
     def __str__(self):
-        return '{0} {1}'.format(self.name, self.surname)
+        return '{0} {1}'.format(self.last_name, self.first_name)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

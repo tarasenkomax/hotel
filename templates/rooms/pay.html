@@ -2,13 +2,13 @@
 {% load static %}
 {% load urlparams %}
 {% block content %}
-<div class="integration">
-    <div class="integration_block">
-        <h2>Страница для интеграции с платежной системой</h2>
-        <p>
-            {{ message }}
-        </p>
-        <a href="{% url 'all_reserves' %}">Мои резервы</a>
+    <div class="integration">
+        <div class="integration_block">
+            <h2>Страница для интеграции с платежной системой</h2>
+            <p>
+                {{ message }}
+            </p>
+            <a href="{% url 'all_reserves' %}">Мои резервы</a>
+        </div>
     </div>
-</div>
 {% endblock %}

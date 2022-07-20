@@ -2,9 +2,9 @@
 <html lang="ru-RU">
 {% load static %}
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta http-equiv="x-ua-compatible" content="IE=edge"/>
     <link
             rel="apple-touch-icon"
             sizes="180x180"
@@ -29,85 +29,96 @@
             href="./assets/favicons/safari-pinned-tab.svg"
             color="#5bbad5"
     />
-    <meta name="msapplication-TileColor" content="#603cba" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="msapplication-TileColor" content="#603cba"/>
+    <meta name="theme-color" content="#ffffff"/>
     <title>ДИПЛОМНАЯ РАБОТА</title>
-    <link href="{% static 'style_0.css' %}" rel="stylesheet" />
+    <link href="{% static 'style_0.css' %}" rel="stylesheet"/>
 
 </head>
 <body>
 {% if  user.is_authenticated %}
-<header class="headers">
-    <div class="header">
-        <div class="header__wrapper container">
-            <div class="header__head">
-                <div class="header__logo">
-                    <a class="logo" href="{% url 'home' %}"
-                    ><img
-                            class="logo__img"
-                            src="{% static './assets/images/logo-img.svg' %}"
-                            alt="TOXIN"
-                    /><!-- РАБОТАЕТ --></a>
+    <header class="headers">
+        <div class="header">
+            <div class="header__wrapper container">
+                <div class="header__head">
+                    <div class="header__logo">
+                        <a class="logo" href="{% url 'home' %}"
+                        ><img
+                                class="logo__img"
+                                src="{% static './assets/images/logo-img.svg' %}"
+                                alt="TOXIN"
+                        /><!-- РАБОТАЕТ --></a>
+                    </div>
+                    <div class="header__burger js-header__burger">
+                        <div class="header__burger-divisions"></div>
+                    </div>
                 </div>
-                <div class="header__burger js-header__burger">
-                    <div class="header__burger-divisions"></div>
-                </div>
-            </div>
-            <div class="header__body js-header__body">
-                {% if user.is_staff%}
-                    <a class="header__item" href="{% url 'admin:index' %}">Админка</a>
-                {% endif %}
-                <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
-                <div class="header__item">
-                    <div class="header__avat">
-                        {% if user.photo %}
-                            <a href="{% url 'account' %}"></a>
-                            <img width="50" height="50" src="{{ user.photo.url }}" alt="avatar">
+                <div class="header__body js-header__body">
+                    {% if user.is_staff %}
+                        <a class="header__item" href="{% url 'admin:index' %}">Админка</a>
+                    {% endif %}
+                    <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
+                    <div class="header__item">
+                        <div class="header__avat">
+                            {% if user.photo %}
+                                <a href="{% url 'account' %}"></a>
+                                <img width="50" height="50" src="{{ user.photo.url }}" alt="avatar">
                             {% else %}
-                            <a href="{% url 'account' %}"></a>
+                                <a href="{% url 'account' %}"></a>
                                 <img width="50" height="50" src="{% static 'default_ava.jpg' %}" alt="avatar"/></a>
                             {% endif %}
-                    </div>
-                    <div class="header__user"><a href="{% url 'account' %}">{{ user.surname}} {{ user.name }}</a>
+                        </div>
+                        <div class="header__user"><a
+                                href="{% url 'account' %}">
+                            {% if user.last_name or user.first_name %}
+                                {{ user.last_name }} {{ user.first_name }}
+                            {% else %}
+                                Личный кабинет
+                            {% endif %}
+                        </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 {% else %}
-<header class="headers">
-    <div class="header">
-        <div class="header__wrapper container">
-            <div class="header__head">
-                <div class="header__logo">
-                    <a class="logo" href="./"
-                    ><img
-                            class="logo__img"
-                            src="{% static './assets/images/logo-img.svg' %}"
-                            alt="TOXIN"
-                    /></a>
+    <header class="headers">
+        <div class="header">
+            <div class="header__wrapper container">
+                <div class="header__head">
+                    <div class="header__logo">
+                        <a class="logo" href="./"
+                        ><img
+                                class="logo__img"
+                                src="{% static './assets/images/logo-img.svg' %}"
+                                alt="TOXIN"
+                        /></a>
+                    </div>
+                    <div class="header__burger js-header__burger">
+                        <div class="header__burger-divisions"></div>
+                    </div>
                 </div>
-                <div class="header__burger js-header__burger">
-                    <div class="header__burger-divisions"></div>
-                </div>
-            </div>
-            <div class="header__body js-header__body">
-                <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
-                <div class="header__item">
-                    <a class="button button_ghostly" href="{% url 'login' %}"
-                    ><div class="button__content">Войти</div></a
-                    >
-                </div>
-                <div class="header__item">
-                    <a class="button" href="{% url 'signup' %}"
-                    ><div class="button__content">Зарегистрироваться</div></a
-                    >
+                <div class="header__body js-header__body">
+                    <a class="header__item" href="{% url 'all_rooms' %}">Все комнаты</a>
+                    <div class="header__item">
+                        <a class="button button_ghostly" href="{% url 'login' %}"
+                        >
+                            <div class="button__content">Войти</div>
+                        </a
+                        >
+                    </div>
+                    <div class="header__item">
+                        <a class="button" href="{% url 'signup' %}"
+                        >
+                            <div class="button__content">Зарегистрироваться</div>
+                        </a
+                        >
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>
+    </header>
 {% endif %}
 <main class="main">
     {% block content %}

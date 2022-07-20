@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="cancel-reserve-page">
-    <form class="cancel-reserve-page_block" action="#" method="post">
-    {% csrf_token %}
-        {% if delay == False %}
-        <h2>Вы уверены, что хотите отменить эту бронь?</h2>
-        <p>
-            {% if message %}
-                {{ message }}
+    <div class="cancel-reserve-page">
+        <form class="cancel-reserve-page_block" action="#" method="post">
+            {% csrf_token %}
+            {% if delay == False %}
+                <h2>Вы уверены, что хотите отменить эту бронь?</h2>
+                <p>
+                    {% if message %}
+                        {{ message }}
+                    {% endif %}
+                </p>
+                <div class="cancel-reserve-page_button">
+                    <button class="button button_directed button_high" type="submit">
+                        <div class="button__content">Отменить</div>
+                    </button>
+                </div>
+            {% else %}
+                <h2>Ошибка отмены бронирования</h2>
+                <p>
+                    Бронь уже истекла.
+                </p>
             {% endif %}
-        </p>
-        <div class="cancel-reserve-page_button">
-            <button class="button button_directed button_high" type="submit">
-                <div class="button__content">Отменить</div>
-            </button>
-        </div>
-        {% else %}
-            <h2>Ошибка отмены бронирования</h2>
-            <p>
-                Бронь уже истекла.
-            </p>
-    {% endif %}
-    </form>
-</div>
+        </form>
+    </div>
 {% endblock %}

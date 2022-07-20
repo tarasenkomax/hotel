@@ -1,28 +1,31 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="wrapper">
-    <h1>Все ваши резервы</h1>
-    <div class="all-reserve-page container">
-        {% for reserve in  reserve_list %}
-        <div class="all-reserve-page__elem">
-            <div class="all-reserve-page__content">
-                <p>Идентификатор: {{ reserve.id }}</p>
-                <p>Комната: {{ reserve.room }}</p>
-                <p>Прибытие: {{ reserve.day_in }}</p>
-                <p>Выезд: {{ reserve.day_out }}</p>
-                <p>Количество гостей: {{ reserve.number_of_guests }}</p>
-            </div>
+    <div class="wrapper">
+        <h1>Все ваши резервы</h1>
+        <div class="all-reserve-page container">
+            {% for reserve in  reserve_list %}
+                <div class="all-reserve-page__elem">
+                    <div class="all-reserve-page__content">
+                        <p>Идентификатор: {{ reserve.id }}</p>
+                        <p>Комната: {{ reserve.room }}</p>
+                        <p>Прибытие: {{ reserve.day_in }}</p>
+                        <p>Выезд: {{ reserve.day_out }}</p>
+                        <p>Количество гостей: {{ reserve.number_of_guests }}</p>
+                    </div>
 
-            <div class="all-reserve-page__button">
-                {% if not reserve.review %}
-                <a class="button" href="{% url 'add_review' reserve.id %}"
-                ><div class="button__content">Оставить отзыв</div></a>{% endif %}
-                <a class="button button_ghostly" href="{% url 'cancel' reserve.id %}">
-                <div class="button__content">Отмена брони</div></a>
-            </div>
+                    <div class="all-reserve-page__button">
+                        {% if not reserve.review %}
+                            <a class="button" href="{% url 'add_review' reserve.id %}"
+                            >
+                                <div class="button__content">Оставить отзыв</div>
+                            </a>{% endif %}
+                        <a class="button button_ghostly" href="{% url 'cancel' reserve.id %}">
+                            <div class="button__content">Отмена брони</div>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-</div>
 {% endblock %}

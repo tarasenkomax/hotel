@@ -69,7 +69,7 @@
                                 <img width="50" height="50" src="{% static 'default_ava.jpg' %}" alt="avatar"/></a>
                             {% endif %}
                         </div>
-                        <div class="header__user"><a href="{% url 'account' %}">{{ user.surname}} {{ user.name }}</a>
+                        <div class="header__user"><a href="{% url 'account' %}">{{ user.last_name}} {{ user.first_name }}</a>
                         </div>
                     </div>
                 </div>

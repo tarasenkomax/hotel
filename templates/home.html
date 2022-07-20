@@ -8,7 +8,7 @@
                     Найдём номера под ваши пожелания
                 </h1>
                 <h4><font color="#ff300b">{{ error }}</font></h4><br>
-                <form class="landing-card__form"  method="post">
+                <form class="landing-card__form" method="post">
                     {% csrf_token %}
                     <div class="landing-card__twin-datepick">
                         <div class="twin-datepick js-twin-datepick">
@@ -26,7 +26,8 @@
                                                 name="day_in"
                                                 readonly="readonly"
                                         /></div
-                                    ></label>
+                                    >
+                                </label>
                             </div>
                             <div class="twin-datepick__item">
                                 <label class="twin-datepick__label"
@@ -42,7 +43,8 @@
                                                 name="day_out"
                                                 readonly="readonly"
                                         /></div
-                                    ></label>
+                                    >
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -83,5 +85,5 @@
             </form>
         </div>
     </div>
-</form>
+    </form>
 {% endblock %}

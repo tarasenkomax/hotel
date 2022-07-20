@@ -22,13 +22,13 @@
                         </div>
                         <div class="self-area-card__bb">
                             <div class="self-area-card__bb-left">
-                                <p>Фамилия: {{ user.surname }}</p>
-                                <p>Имя: {{ user.name }}</p>
+                                <p>Фамилия: {{ user.last_name }}</p>
+                                <p>Имя: {{ user.first_name }}</p>
                             </div>
                             <div class="self-area-card__bb-right">
                                 <p>Почта : {{ user.email }}</p>
                                 <p>Дата рождения: {{ user.date_of_birth }}</p>
-                                <p>Телефон: {{user.phone }}</p>
+                                <p>Телефон: {{ user.phone }}</p>
                             </div>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                         {% if user.photo %}
                             <img width="150" height="150" src="{{ user.photo.url }}" alt="avatar">
                         {% else %}
-                            <img src="{% static 'default_ava.jpg' %}" alt="Аватарка" />
+                            <img src="{% static 'default_ava.jpg' %}" alt="Аватарка"/>
                         {% endif %}
 
                     </div>

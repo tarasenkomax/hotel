@@ -2,48 +2,49 @@
 {% load static %}
 {% block content %}
     <div class="options-page">
-    <div class="options-card">
-        <form class="options-card__fields" enctype="multipart/form-data" action="#" method="post">
-            <div class="options-card__left">
-                <div class="options-card__top">
-                    <ul>
-                        <li><a href="{% url 'account' %}">Личный кабинет</a></li>
-                        <li><a href="{% url 'account_settings' %}">Настройки</a></li>
-                        <li><a href="{% url 'all_reserves' %}">Мои резервы</a></li>
-                        <li><a href="{% url 'logout' %}">Выход</a></li>
-                    </ul>
-                </div>
-                <div class="options-card__bottom">
-                    <div class="options-card__bt">
-                        <h2>Изменение настроек пользователя</h2>
+        <div class="options-card">
+            <form class="options-card__fields" enctype="multipart/form-data" action="#" method="post">
+                <div class="options-card__left">
+                    <div class="options-card__top">
+                        <ul>
+                            <li><a href="{% url 'account' %}">Личный кабинет</a></li>
+                            <li><a href="{% url 'account_settings' %}">Настройки</a></li>
+                            <li><a href="{% url 'all_reserves' %}">Мои резервы</a></li>
+                            <li><a href="{% url 'logout' %}">Выход</a></li>
+                        </ul>
                     </div>
-                    <div class="options-card__bb">
-                        <div class="options-card__bb-left">
+                    <div class="options-card__bottom">
+                        <div class="options-card__bt">
+                            <h2>Изменение настроек пользователя</h2>
+                        </div>
+                        <div class="options-card__bb">
+                            <div class="options-card__bb-left">
 
-                            <div class="options-card__elem">
-                                {% csrf_token %}
-                                {% for field in form %}
-                                    <font color="red">{{ field.errors }}</font>
-                                    {{ field.label_tag }} {{ field }}
+                                <div class="options-card__elem">
+                                    {% csrf_token %}
+                                    {% for field in form %}
+                                        <font color="red">{{ field.errors }}</font>
+                                        {{ field.label_tag }} {{ field }}
 
-                                {% endfor %}
+                                    {% endfor %}
 
-                                <div class="options-card__footer">
-                                    <img src="{% static './assets/images/key.png' %}" alt="key" /><a href="{% url 'password_change' %}"
-                                >Изменить пароль учетной записи</a
-                                >
-                                </div>
-                                <div class="options-card__button">
-                                    <button class="button button_high" type="submit">
-                                        <div class="button__content">Сохранить изменения</div>
-                                    </button>
+                                    <div class="options-card__footer">
+                                        <img src="{% static './assets/images/key.png' %}" alt="key"/><a
+                                            href="{% url 'password_change' %}"
+                                    >Изменить пароль учетной записи</a
+                                    >
+                                    </div>
+                                    <div class="options-card__button">
+                                        <button class="button button_high" type="submit">
+                                            <div class="button__content">Сохранить изменения</div>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 {% endblock %}

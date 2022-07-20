@@ -3,148 +3,155 @@
 {% load urlparams %}
 {% block content %}
     <div class="room">
-    <div class="room__collage">
-        <div class="collage">
-            <div class="collage__img collage__img_main">
-                <img
-                        src="{{ room.photos_of_room.slider_photo1.url }}"
-                        alt="room-888-1"
-                /><img
-                    src="{{ room.photos_of_room.slider_photo2.url }}"
-                    alt="room-888-2"
-            />
-            </div>
-            <div class="collage__img collage__img_minor">
-                <img
-                        src="{{ room.photos_of_room.slider_photo3.url }}"
+        <div class="room__collage">
+            <div class="collage">
+                <div class="collage__img collage__img_main">
+                    <img
+                            src="{{ room.photos_of_room.slider_photo1.url }}"
+                            alt="room-888-1"
+                    /><img
+                        src="{{ room.photos_of_room.slider_photo2.url }}"
+                        alt="room-888-2"
+                />
+                </div>
+                <div class="collage__img collage__img_minor">
+                    <img
+                            src="{{ room.photos_of_room.slider_photo3.url }}"
+                            alt="room-888-3"
+                    /><img
+                        src="{{ room.photos_of_room.slider_photo4.url }}"
                         alt="room-888-3"
-                /><img
-                    src="{{ room.photos_of_room.slider_photo4.url }}"
-                    alt="room-888-3"
-            />
-            </div>
-        </div>
-    </div>
-    <div class="container room__body">
-        <div class="room__about">
-            <h2 class="room__header">Сведения о номере {{ room.number }}</h2>
-            <div class="room__privileges">
-                <p>
-                    {{ room.type.description }}
-                </p>
-            </div>
-        </div>
-        <div class="room__reviews"></div>
-        <div class="room__check">
-            <div class="total-card">
-                <div class="total-card__header">
-                    <div class="total-card__room-number">
-                        <label class="total-card__prefix">№</label>
-                        <h1 class="total-card__number">{{ room.number }}</h1>
-                        <label class="room-number__lux">{{ room.type }}</label>
-                    </div>
-                    <div class="total-card__room-cost">
-                        <label class="total-card__rubles">{{ room.price }} ₽</label>
-                        <p class="total-card__period">в сутки</p>
-                    </div>
+                />
                 </div>
-                <div class="total-card__body">
-                    <div class="total-card__input">
-                        <div class="twin-datepick">
-                            <div class="twin-datepick__item_text">
-                                <label class="twin-datepick__label">Прибытие</label>
-                                <p class="twin-datepick__input">{{ day_in }}</p>
-                            </div>
-                            <div class="twin-datepick__item_text">
-                                <label class="twin-datepick__label">Выезд</label>
-                                <p class="twin-datepick__input">{{ day_out }}</p>
-                            </div>
+            </div>
+        </div>
+        <div class="container room__body">
+            <div class="room__about">
+                <h2 class="room__header">Сведения о номере {{ room.number }}</h2>
+                <div class="room__privileges">
+                    <p>
+                        {{ room.type.description }}
+                    </p>
+                </div>
+            </div>
+            <div class="room__reviews"></div>
+            <div class="room__check">
+                <div class="total-card">
+                    <div class="total-card__header">
+                        <div class="total-card__room-number">
+                            <label class="total-card__prefix">№</label>
+                            <h1 class="total-card__number">{{ room.number }}</h1>
+                            <label class="room-number__lux">{{ room.type }}</label>
+                        </div>
+                        <div class="total-card__room-cost">
+                            <label class="total-card__rubles">{{ room.price }} ₽</label>
+                            <p class="total-card__period">в сутки</p>
                         </div>
                     </div>
-                    <div class="total-card__input">
-                        <div class="twin-datepick">
-                            <div class="twin-datepick__item_text">
-                                <label class="twin-datepick__label"
-                                >Колличество суток</label
-                                >
-                                <p class="twin-datepick__input">{{ days }}</p>
-                            </div>
-                            <div class="twin-datepick__item_text">
-                                <label style="right: 67px; position: relative" class="twin-datepick__label">Гости</label>
-                                <p class="twin-datepick__input" style="right: 67px; position: relative">{{ number_of_guests }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="total-card__total">
-                    <h2 class="total-card__result">Итого</h2>
-                    <div class="total-card__space"></div>
-                    <h2 class="total-card__cost">{{ full_price }}₽</h2>
-                </div>
-                <a class="button button_directed button_high" href={% url 'pay' room.number %}{% urlparams full_price=full_price day_in=day_in day_out=day_out number_of_guests=number_of_guests %}
-                ><div class="button__content">Забронировать</div></a
-                ><a href="#" onclick="window.history.back()"
-
-            ><div class="button__content_isLight" >
-                Вернуться к списку комнат
-            </div></a>
-            </div>
-        </div>
-        <div class="room__comments">
-            <div class="comments">
-                <div class="comments__header">
-                    {% if review_list %}
-                    <h2 class="comments__title">Отзывы посетителей номера</h2>
-                    <div class="comments__counter">{{ num_of_review }} отзывов</div>
-                </div>
-                        {% for review in review_list %}
-                <div class="comments__body">
-                    <div class="comments__item">
-                        <div class="comment">
-                            <div class="comment__header">
-                                {% if  review.author.photo %}
-                                <img
-                                        class="comment__image"
-                                        src="{{ review.author.photo.url }}"
-                                        alt="marat-123"
-                                />
-                                {% else %}
-                                <img
-                                        class="comment__image"
-                                        src="{% static 'default_ava.jpg' %}"
-                                        alt="marat-123"
-                                />
-                                {% endif %}
-                                <div class="comment__user">
-                                    <label class="comment__username">{{ review.author.name }} {{ review.author.surname }}</label>
-                                    <p>Оценка: <span>{{ review.rating }}</span></p>
+                    <div class="total-card__body">
+                        <div class="total-card__input">
+                            <div class="twin-datepick">
+                                <div class="twin-datepick__item_text">
+                                    <label class="twin-datepick__label">Прибытие</label>
+                                    <p class="twin-datepick__input">{{ day_in }}</p>
+                                </div>
+                                <div class="twin-datepick__item_text">
+                                    <label class="twin-datepick__label">Выезд</label>
+                                    <p class="twin-datepick__input">{{ day_out }}</p>
                                 </div>
                             </div>
-                            <div class="comment__body">
-                                <p class="comment__content">
-                                    {{ review.body }}
-                                </p>
+                        </div>
+                        <div class="total-card__input">
+                            <div class="twin-datepick">
+                                <div class="twin-datepick__item_text">
+                                    <label class="twin-datepick__label"
+                                    >Колличество суток</label
+                                    >
+                                    <p class="twin-datepick__input">{{ days }}</p>
+                                </div>
+                                <div class="twin-datepick__item_text">
+                                    <label style="right: 67px; position: relative"
+                                           class="twin-datepick__label">Гости</label>
+                                    <p class="twin-datepick__input"
+                                       style="right: 67px; position: relative">{{ number_of_guests }}</p>
+                                </div>
                             </div>
-                            <div class="comment__date">Дата публикации: {{ review.pub_date }}</div>
                         </div>
                     </div>
-                        {% endfor %}
-                    {% endif %}
+                    <div class="total-card__total">
+                        <h2 class="total-card__result">Итого</h2>
+                        <div class="total-card__space"></div>
+                        <h2 class="total-card__cost">{{ full_price }}₽</h2>
+                    </div>
+                    <a class="button button_directed button_high" href=
+                            {% url 'pay' room.number %}{% urlparams full_price=full_price day_in=day_in day_out=day_out number_of_guests=number_of_guests %}
+                    >
+                        <div class="button__content">Забронировать</div>
+                    </a
+                    ><a href="#" onclick="window.history.back()"
+
+                >
+                    <div class="button__content_isLight">
+                        Вернуться к списку комнат
+                    </div>
+                </a>
                 </div>
             </div>
-        </div>
-        {% if regulations_list %}
-        <div class="room__bullet-list">
-            <h2 class="room__header room__bullet-header">Правила</h2>
-            <div class="bullet-list">
+            <div class="room__comments">
+                <div class="comments">
+                    <div class="comments__header">
+                        {% if review_list %}
+                            <h2 class="comments__title">Отзывы посетителей номера</h2>
+                            <div class="comments__counter">{{ num_of_review }} отзывов</div>
+                            </div>
+                            {% for review in review_list %}
+                                <div class="comments__body">
+                                <div class="comments__item">
+                                    <div class="comment">
+                                        <div class="comment__header">
+                                            {% if  review.author.photo %}
+                                                <img
+                                                        class="comment__image"
+                                                        src="{{ review.author.photo.url }}"
+                                                        alt="marat-123"
+                                                />
+                                            {% else %}
+                                                <img
+                                                        class="comment__image"
+                                                        src="{% static 'default_ava.jpg' %}"
+                                                        alt="marat-123"
+                                                />
+                                            {% endif %}
+                                            <div class="comment__user">
+                                                <label class="comment__username">{{ review.author.last_name }} {{ review.author.first_name }}</label>
+                                                <p>Оценка: <span>{{ review.rating }}</span></p>
+                                            </div>
+                                        </div>
+                                        <div class="comment__body">
+                                            <p class="comment__content">
+                                                {{ review.body }}
+                                            </p>
+                                        </div>
+                                        <div class="comment__date">Дата публикации: {{ review.pub_date }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        </div>
+                </div>
+            </div>
+            {% if regulations_list %}
+                <div class="room__bullet-list">
+                <h2 class="room__header room__bullet-header">Правила</h2>
+                <div class="bullet-list">
                 {% for regulation in regulations_list %}
-                <ul class="bullet-list__content">
+                    <ul class="bullet-list__content">
                     <li class="bullet-list__item">{{ regulation.regulation }}</li>
                 {% endfor %}
-        {% endif %}
-                </ul>
+            {% endif %}
+            </ul>
+            </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -15,8 +15,8 @@ class ReviewForm(forms.ModelForm):
             raise forms.ValidationError("Отзыв не должен превышать 500 символов")
         return body
 
-    def clean_rating(self):
-        rating = self.cleaned_data['rating']
-        if 0 > rating or rating > 5:
-            raise forms.ValidationError("Рейтинг должен быть в диапазоне от 1 до 5")
-        return rating
+    # def clean_rating(self):
+    #     rating = self.cleaned_data['rating']
+    #     if 1 > rating or rating > 5:
+    #         raise forms.ValidationError("Рейтинг должен быть в диапазоне от 1 до 5")
+    #     return rating

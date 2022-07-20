@@ -12,11 +12,13 @@ class CustomUserAdmin(UserAdmin):
     """ Пользователи """
     add_form = CustomUserCreationForm
     model = CustomUser
-    list_display = ('email', 'surname', 'name',  'is_staff',)
-    list_filter = ('is_staff',)
+    list_display = ('email', 'first_name', 'last_name', 'is_superuser', 'is_staff', 'is_active')
+    list_filter = ('is_superuser', 'is_staff', 'is_active')
+    readonly_fields = ('last_login', 'date_joined')
     fieldsets = (
-        (None, {'fields': ('surname', 'name', 'email', 'phone', 'date_of_birth', 'photo',)}),
-        ('Разрешения', {'fields': ('is_staff', 'is_active')}),
+        (None, {'fields': (
+            'email', 'last_name', 'first_name', 'phone', 'date_of_birth', 'photo', 'last_login', 'date_joined')}),
+        ('Разрешения', {'fields': ('is_superuser', 'is_staff', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
@@ -24,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
          ),
     )
-    search_fields = ('email', 'name', 'surname')
+    search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
 

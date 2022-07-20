@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="review">
-    <form class="review-card" action="#" method="post">
-        <h1 class="login-card__header">Добавить отзыв</h1>
-        <div class="review-card__fields">
-            <h2 class="htop">Номер: {{ room_reserve }}</h2>
-            <p class="rtop">Прибытие: {{ day_in  }}</p>
-            <p>Выезд: {{  day_out }}</p>
-            {% csrf_token %}
-            {{ form.as_p }}<br>
-            <button class="button button_directed button_high" type="submit">
-                <div class="button__content">Отправить</div>
-            </button>
-        </div>
-    </form>
-</div>
+    <div class="review">
+        <form class="review-card" action="#" method="post">
+            <h1 class="login-card__header">Добавить отзыв</h1>
+            <div class="review-card__fields">
+                <h2 class="htop">Номер: {{ room_reserve }}</h2>
+                <p class="rtop">Прибытие: {{ day_in }}</p>
+                <p>Выезд: {{ day_out }}</p>
+                {% csrf_token %}
+                {{ form.as_p }}<br>
+                <button class="button button_directed button_high" type="submit">
+                    <div class="button__content">Отправить</div>
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

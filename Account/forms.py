@@ -11,25 +11,25 @@ from .models import CustomUser
 class CleanNameUserMixin:
     """ Миксин для валидации имени и фамилии пользователя """
 
-    def clean_name(self):
-        name = self.cleaned_data['name']
-        if re.search(r'[.,:;!_*+()/#¤%&]', name):
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        if re.search(r'[.,:;!_*+()/#¤%&]', first_name):
             raise forms.ValidationError("Имя не должно содержать символы")
-        if re.search(r'[0123456789]', name):
+        if re.search(r'[0123456789]', first_name):
             raise forms.ValidationError("Имя не должно содержать цифры")
-        if re.search(r'\s', name):
+        if re.search(r'\s', first_name):
             raise forms.ValidationError("Имя не должно содержать пробелы")
-        return name
+        return first_name
 
-    def clean_surname(self):
-        surname = self.cleaned_data['surname']
-        if re.search(r'[.,:;!_*+()/#¤%&]', surname):
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        if re.search(r'[.,:;!_*+()/#¤%&]', last_name):
             raise forms.ValidationError("Фамилия не должна содержать символы")
-        if re.search(r'[0123456789]', surname):
+        if re.search(r'[0123456789]', last_name):
             raise forms.ValidationError("Фамилия не должна содержать цифры")
-        if re.search(r'\s', surname):
+        if re.search(r'\s', last_name):
             raise forms.ValidationError("Фамилия не должна содержать пробелы")
-        return surname
+        return last_name
 
 
 class CustomUserCreationForm(UserCreationForm, CleanNameUserMixin):
@@ -37,7 +37,7 @@ class CustomUserCreationForm(UserCreationForm, CleanNameUserMixin):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'surname', 'name', 'date_of_birth')
+        fields = ('email', 'last_name', 'first_name', 'date_of_birth')
         error_messages = {'password_mismatch': _('Пароли не совпадают'), }
 
     password1 = forms.CharField(
@@ -57,8 +57,8 @@ class UserSettingsForm(forms.ModelForm, CleanNameUserMixin):
 
     class Meta:
         model = CustomUser
-        fields = ('surname',
-                  'name',
+        fields = ('last_name',
+                  'first_name',
                   'date_of_birth',
                   'phone',
                   'photo')

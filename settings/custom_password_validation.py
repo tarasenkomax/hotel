@@ -13,10 +13,15 @@ class MinimumLengthValidator:
 
     def validate(self, password, user=None):
         if len(password) < self.min_length:
-            raise ValidationError(ngettext(
-                f"Этот пароль слишком короткий. Он должен содержать не менее {self.min_length} символа.",
-                f"Этот пароль слишком короткий. Он должен содержать не менее {self.min_length} символов.",
-                self.min_length), code='password_too_short', params={'min_length': self.min_length})
+            raise ValidationError(
+                ngettext(
+                    f"Этот пароль слишком короткий. Он должен содержать не менее {self.min_length} символа.",
+                    f"Этот пароль слишком короткий. Он должен содержать не менее {self.min_length} символов.",
+                    self.min_length), code='password_too_short', params={'min_length': self.min_length})
+
+    def get_help_text(self):
+        return ngettext(f"Ваш пароль должен содержать не менее {self.min_length} символа.", "", self.min_length) % {
+            'min_length': self.min_length}
 
 
 class MaximumLengthValidator:
@@ -27,10 +32,16 @@ class MaximumLengthValidator:
 
     def validate(self, password, user=None):
         if len(password) > self.max_length:
-            raise ValidationError(ngettext(
-                f"Этот пароль слишком длинный. Он должен содержать не более {self.max_length} символа.",
-                f"Этот пароль слишком длинный. Он должен содержать не более {self.max_length} символов.",
-                self.max_length), code='password_too_short', params={'max_length': self.max_length})
+            raise ValidationError(
+                ngettext(
+                    f"Этот пароль слишком длинный. Он должен содержать не более {self.max_length} символа.",
+                    f"Этот пароль слишком длинный. Он должен содержать не более {self.max_length} символов.",
+                    self.max_length), code='password_too_short', params={'max_length': self.max_length}, )
+
+    def get_help_text(self):
+        return ngettext(
+            f"Ваш пароль должен содержать не более {self.max_length} символа.", "", self.max_length) % {
+                   'max_length': self.max_length}
 
 
 class NumericPasswordValidator:
@@ -38,14 +49,14 @@ class NumericPasswordValidator:
 
     def validate(self, password, user=None):
         if password.isdigit():
-            raise ValidationError(_("Этот пароль полностью числовой."), code='password_entirely_numeric')
-        if password.isalpha():
-            raise ValidationError(_("Этот пароль полностью буквенный."), code='password_entirely_alphabetic')
-
+            raise ValidationError(_("Этот пароль полностью числовой."), code='password_entirely_numeric', )
         if not re.search(r'\w[a-z]', password):
             raise ValidationError(_("Пароль  должен содержать хотя бы одну маленькую букву"), code='only_big_register')
         if not re.search(r'\w[A-Z]', password):
             raise ValidationError(_("Пароль  должен содержать хотя бы одну большую букву"), code='only_small_register')
+
+    def get_help_text(self):
+        return _('')
 
 
 class SpecialCharactersPasswordValidator:
@@ -55,3 +66,6 @@ class SpecialCharactersPasswordValidator:
         if re.search(r'[- .,:;!_*+()/#¤<>%&]', password):
             raise ValidationError(_("Пароль содержит недопустимый символ.(- .,:;!_*+()/#¤<>%&)"),
                                   code='password_special_characters', )
+
+    def get_help_text(self):
+        return _('')

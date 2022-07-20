@@ -184,7 +184,7 @@ class Pay(LoginRequiredMixin, View):
             reserve.save()
             message = 'Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. Так ' \
                       'же информацию о брони вы можете посмотреть в разделе "Мои резервы". '
-            send_email(request.user.name, reserve.room, reserve.day_in, reserve.day_out, reserve.number_of_guests,
+            send_email(request.user.first_name, reserve.room, reserve.day_in, reserve.day_out, reserve.number_of_guests,
                        request.user.email)
         else:
             message = 'Ошибка оплаты.'
