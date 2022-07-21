@@ -265,7 +265,7 @@
                             </div>
                         </div>
                     </div>
-                    <a class="room-card__description" href="{% url 'reserve_room' room.number %}{% urlparams day_in=day_in day_out=day_out number_of_guests=number_of_guests%}"
+                    <a class="room-card__description" href="{% url 'reserve_room' room %}{% urlparams day_in=day_in day_out=day_out number_of_guests=number_of_guests%}"
                     ><div class="room-card__header">
                         <div class="room-number">
                             <label class="room-number__prefix">№</label>
@@ -281,7 +281,7 @@
                             <div class="room-card__text">{{ room.type }}</div>
                             <div class="room-card__reviews">
                                 <p class="room-card__postfix">Рейтинг </p>
-                                 <label class="room-card__count"> {{ room.get_average_rating|default_if_none:"5.0" }}</label>
+                                 <label class="room-card__count"> {{ room.get_average_rating|default_if_none:"5,0" }}</label>
                             </div>
                         </div></a
                     >

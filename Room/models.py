@@ -1,6 +1,10 @@
+from decimal import Decimal
+from typing import Union
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Avg, QuerySet
+from django.urls import reverse
 
 from Account.models import CustomUser, TimeStampedModel
 
@@ -47,9 +51,13 @@ class Room(TimeStampedModel):
     def __str__(self):
         return str(self.number)
 
-    def get_average_rating(self):
+    def get_absolute_url(self):
+        return reverse('detail_room', kwargs={"number": self.number})
+
+    def get_average_rating(self) -> Union[Decimal, None]:
         """ Получить средний рейтинг комнаты """
-        return Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
+        reviews = Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
+        return Decimal(reviews).quantize(Decimal("1.0")) if reviews else None
 
     def get_regulations_list(self) -> QuerySet:
         """ Получить список правил для комнаты """

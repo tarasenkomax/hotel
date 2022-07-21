@@ -8,12 +8,11 @@
                 <div class="all-reserve-page__elem">
                     <div class="all-reserve-page__content">
                         <p>Идентификатор: {{ reserve.id }}</p>
-                        <p>Комната: {{ reserve.room }}</p>
+                        <p>Комната: <a href="{% url 'detail_room' reserve.room.number %}">{{ reserve.room }}</a></p>
                         <p>Прибытие: {{ reserve.day_in }}</p>
                         <p>Выезд: {{ reserve.day_out }}</p>
                         <p>Количество гостей: {{ reserve.number_of_guests }}</p>
                     </div>
-
                     <div class="all-reserve-page__button">
                         {% if not reserve.review %}
                             <a class="button" href="{% url 'add_review' reserve.id %}"
