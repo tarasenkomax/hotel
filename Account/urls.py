@@ -5,7 +5,7 @@ from Account import views
 from Account.forms import AuthenticationUserForm
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', views.Home.as_view(), name='home'),
 
     # ----- AUTH -----
     path('signup', views.SignUpTwoStepActivation.as_view(), name='signup'),

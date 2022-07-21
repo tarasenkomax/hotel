@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 
 from django.views.generic import DetailView, UpdateView, CreateView
 from django_registration.backends.activation.views import RegistrationView
@@ -72,20 +73,26 @@ class AccountSetting(LoginRequiredMixin, UpdateView):
         return get_object_or_404(CustomUser, email=self.request.user.email)
 
 
-@login_required(login_url="login")
-def home(request):
+class Home(LoginRequiredMixin, View):
     """ Домашняя страница """
-    error = ''
-    if request.method == 'POST':
-        if request.POST['day_in'] and request.POST['day_out'] and request.POST['number_of_guests']:
-            day_in = datetime.datetime.strptime(request.POST['day_in'], '%d.%m.%Y').date()
-            day_out = datetime.datetime.strptime(request.POST['day_out'], '%d.%m.%Y').date()
-            number_of_guests = int(request.POST['number_of_guests'][0])
-            if check_dates_of_user(request.user, day_in, day_out):
+
+    def __init__(self):
+        super().__init__()
+        self.error = ''
+
+    def get(self, request, *args, **kwargs):
+        return render(self.request, 'home.html', {'error': self.error})
+
+    def post(self, request, *args, **kwargs):
+        if self.request.POST['day_in'] and self.request.POST['day_out'] and self.request.POST['number_of_guests']:
+            day_in = datetime.datetime.strptime(self.request.POST['day_in'], '%d.%m.%Y').date()
+            day_out = datetime.datetime.strptime(self.request.POST['day_out'], '%d.%m.%Y').date()
+            number_of_guests = int(self.request.POST['number_of_guests'][0])
+            if check_dates_of_user(self.request.user, day_in, day_out):
                 return redirect(
                     f'/list_free_rooms?day_in={day_in}&day_out={day_out}&number_of_guests={number_of_guests}')
             else:
-                error = 'У вас есть бронь пересекающаяся с выбранными датами'
+                self.error = 'У вас есть бронь пересекающаяся с выбранными датами'
         else:
-            error = 'Пожалуйста заполните все поля формы'
-    return render(request, 'home.html', {'error': error})
+            self.error = 'Пожалуйста заполните все поля формы'
+        return self.get(self, request, *args, **kwargs)
