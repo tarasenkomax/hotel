@@ -11,6 +11,8 @@ urlpatterns = [
     path('signup', views.SignUpTwoStepActivation.as_view(), name='signup'),
     path('login', auth_views.LoginView.as_view(authentication_form=AuthenticationUserForm), name='login'),
     path('logout', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+
+    # ----- ПОДТВЕРЖДЕНИЕ ПОЧТЫ -----
     path('account/', include('django_registration.backends.activation.urls')),
 
     # ----- СБРОС ПАРОЛЯ -----
@@ -40,5 +42,4 @@ urlpatterns = [
     # -----ЛИЧНЫЙ КАБИНЕТ-----
     path('account/', views.Account.as_view(), name='account'),
     path('account_settings/', views.AccountSetting.as_view(), name='account_settings'),
-
 ]

@@ -6,9 +6,8 @@ from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 
 from Room.forms import ReviewForm
-from Room.models import Room, Reserve, Review, Regulations
-from Room.utils import check_availability, get_number_of_days, check_dates_of_user, send_email, send_email_cancel, \
-    convert_str_to_date
+from Room.models import Room, Reserve
+from Room import utils
 import datetime
 
 
@@ -31,9 +30,8 @@ class DetailRoom(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['regulations_list'] = Regulations.objects.filter(type_room=self.get_object().type)
-        context['review_list'] = Review.objects.filter(room=self.get_object()).order_by('-pub_date').select_related(
-            'author')
+        context['regulations_list'] = self.get_object().get_regulations_list()
+        context['review_list'] = self.get_object().get_review_list()
         context['num_of_review'] = len(context['review_list'])
         return context
 
@@ -89,17 +87,16 @@ class ReserveRoom(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['regulations_list'] = Regulations.objects.filter(type_room=self.get_object().type)
-        context['review_list'] = Review.objects.filter(room=self.get_object()).order_by('-pub_date').select_related(
-            'author')
+        context['regulations_list'] = self.get_object().get_regulations_list()
+        context['review_list'] = self.get_object().get_review_list()
 
         context['num_of_review'] = len(context['review_list'])
         context['day_in'] = self.request.GET['day_in']
         context['day_out'] = self.request.GET['day_out']
         context['number_of_guests'] = self.request.GET['number_of_guests']
-        context['days'] = get_number_of_days(convert_str_to_date(self.request.GET['day_in']),
-                                             convert_str_to_date(self.request.GET['day_out']))
-        context['full_price'] = self.get_object().price * context['days']
+        context['days'] = utils.get_number_of_days(utils.convert_str_to_date(self.request.GET['day_in']),
+                                                   utils.convert_str_to_date(self.request.GET['day_out']))
+        context['full_price'] = self.get_object().get_full_price(context['days'])
         return context
 
 
@@ -117,23 +114,24 @@ class Cancel(LoginRequiredMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         if not datetime.datetime.now().date() > self.get_object().day_out:
-            send_email_cancel(request.user.email)
+            utils.send_cancel_email(request.user.email)
         return super().post(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         if datetime.datetime.now().date() < self.get_object().day_in:
-            context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out)
+            context['days'] = utils.get_number_of_days(self.get_object().day_in, self.get_object().day_out)
             context['delay'] = False
         elif datetime.datetime.now().date() == self.get_object().day_in:
-            context['days'] = get_number_of_days(self.get_object().day_in, self.get_object().day_out) - 1
+            context['days'] = utils.get_number_of_days(self.get_object().day_in, self.get_object().day_out) - 1
             context['delay'] = False
         else:
             if datetime.datetime.now().date() > self.get_object().day_out:
                 context['days'] = 0
                 context['delay'] = True
             else:
-                context['days'] = get_number_of_days(datetime.datetime.now().date(), self.get_object().day_out)
+                context['days'] = utils.get_number_of_days(datetime.datetime.now().date(), self.get_object().day_out)
                 context['delay'] = False
         cost = self.get_object().room.price * context['days']
         context[
@@ -152,13 +150,12 @@ class ListFreeRooms(ListView, LoginRequiredMixin):
             number_of_guests__gte=int(self.request.GET['number_of_guests']))
         free_rooms_number_list = []
         for room in free_rooms_list:
-            if check_availability(room,
-                                  convert_str_to_date(self.request.GET['day_in']),
-                                  convert_str_to_date(self.request.GET['day_out'])):
+            if utils.check_availability(room, utils.convert_str_to_date(self.request.GET['day_in']),
+                                        utils.convert_str_to_date(self.request.GET['day_out'])):
                 free_rooms_number_list.append(room.number)
-        if check_dates_of_user(self.request.user,
-                               convert_str_to_date(self.request.GET['day_in']),
-                               convert_str_to_date(self.request.GET['day_out'])):
+        if utils.check_dates_of_user(self.request.user,
+                                     utils.convert_str_to_date(self.request.GET['day_in']),
+                                     utils.convert_str_to_date(self.request.GET['day_out'])):
             return Room.objects.select_related('type').filter(number__in=free_rooms_number_list).order_by('number')
 
     def get_context_data(self, **kwargs):
@@ -173,19 +170,18 @@ class Pay(LoginRequiredMixin, View):
     """ Оплата брони (заглушка)"""
 
     def get(self, request, *args, **kwargs):
-        if check_dates_of_user(request.user,
-                               convert_str_to_date(request.GET['day_in']),
-                               convert_str_to_date(request.GET['day_out'])):
-            reserve = Reserve(day_in=request.GET['day_in'],
-                              day_out=request.GET['day_out'],
+        if utils.check_dates_of_user(request.user, utils.convert_str_to_date(request.GET['day_in']),
+                                     utils.convert_str_to_date(request.GET['day_out'])):
+            reserve = Reserve(day_in=request.GET['day_in'], day_out=request.GET['day_out'],
                               room=get_object_or_404(Room, number=self.kwargs.get("number")),
-                              number_of_guests=request.GET['number_of_guests'],
-                              client=request.user)
+                              number_of_guests=request.GET['number_of_guests'], client=request.user)
             reserve.save()
-            message = 'Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. Так ' \
-                      'же информацию о брони вы можете посмотреть в разделе "Мои резервы". '
-            send_email(request.user.first_name, reserve.room, reserve.day_in, reserve.day_out, reserve.number_of_guests,
-                       request.user.email)
+            message = """ 
+            Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. 
+            Так же информацию о брони вы можете посмотреть в разделе "Мои резервы". 
+            """
+            utils.send_reserve_email(request.user.first_name, reserve.room, reserve.day_in, reserve.day_out,
+                                     reserve.number_of_guests, request.user.email)
         else:
-            message = 'Ошибка оплаты.'
+            message = "Ошибка оплаты."
         return render(request, 'rooms/pay.html', {'message': message, })

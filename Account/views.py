@@ -1,7 +1,6 @@
 import datetime
 
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -57,7 +56,6 @@ class SignUpTwoStepActivation(RegistrationView):
         subject = render_to_string(template_name=self.email_subject_template, context=context, request=self.request)
         subject = "".join(subject.splitlines())
         message = render_to_string(template_name=self.email_body_template, context=context, request=self.request)
-
         msg = EmailMultiAlternatives(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
         msg.attach_alternative(message, "text/html")
         msg.send()

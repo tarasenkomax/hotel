@@ -3,7 +3,6 @@ from django.urls import path
 from Room import views
 
 urlpatterns = [
-
     path('all_rooms', views.AllRooms.as_view(), name='all_rooms'),
     path('room/<int:number>', views.DetailRoom.as_view(), name='detail_room'),
     path('all_reserves', views.AllReserves.as_view(), name='all_reserves'),
@@ -12,5 +11,4 @@ urlpatterns = [
     path('cancel/<int:pk>', views.Cancel.as_view(), name='cancel'),
     path('pay/<int:number>', views.Pay.as_view(), name='pay'),
     path('add_review/<int:pk>', views.AddReview.as_view(), name='add_review'),
-
 ]

@@ -11,12 +11,12 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'deleted_old_reserve': {
         'task': 'Room.tasks.drop_old_reserve',
-        # ежедневно в полночь
+        # Ежедневно в полночь
         'schedule': crontab(minute=0, hour=0),
     },
     'send_promotion': {
         'task': 'Account.tasks.send_promotion',
-        # каждый день в первый месяц каждого квартала(раз в 3 месяца)
+        # Каждый день в первый месяц каждого квартала(раз в 3 месяца)
         'schedule': crontab(0, 0, month_of_year='*/3'),
     }
 }

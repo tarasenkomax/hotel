@@ -58,22 +58,12 @@ class UserSettingsForm(forms.ModelForm, CleanNameUserMixin):
 
     class Meta:
         model = CustomUser
-        fields = ('last_name',
-                  'first_name',
-                  'date_of_birth',
-                  'phone',
-                  'photo')
+        fields = ('last_name', 'first_name', 'date_of_birth', 'phone', 'photo')
 
 
 class AuthenticationUserForm(AuthenticationForm):
     """ Форма авторизации пользователя """
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}))
 
-    error_messages = {
-        'invalid_login': _(
-            "Не нашлось совпадений логина и пароля"
-        ),
-        'inactive': _(
-            "Этот аккаунт не активен."
-        ),
-    }
+    error_messages = {'invalid_login': _("Не нашлось совпадений логина и пароля"),
+                      'inactive': _("Этот аккаунт не активен.")}

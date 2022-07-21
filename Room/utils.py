@@ -42,7 +42,7 @@ def check_dates_of_user(user: User, day_in: datetime.date, day_out: datetime.dat
         return True if counter <= 0 else False
 
 
-def send_email(name, room, day_in: datetime.date, day_out: datetime.date, number_of_guests, recipient):
+def send_reserve_email(name, room, day_in: datetime.date, day_out: datetime.date, number_of_guests, recipient):
     """ Отправка письма о подтверждении брони """
     email_theme = 'Дипломная работа'
     email_text = f"""
@@ -59,7 +59,7 @@ def send_email(name, room, day_in: datetime.date, day_out: datetime.date, number
     send_mail(email_theme, email_text, config.EMAIL_HOST_USER, [str(recipient)], fail_silently=False)
 
 
-def send_email_cancel(recipient):
+def send_cancel_email(recipient):
     """ Отправка письма об отмене брони """
     email_theme = 'Дипломная работа. Отмена бронирования.'
     email_text = """

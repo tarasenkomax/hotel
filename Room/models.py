@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Avg
+from django.db.models import Avg, QuerySet
 
 from Account.models import CustomUser, TimeStampedModel
 
@@ -48,7 +48,20 @@ class Room(TimeStampedModel):
         return str(self.number)
 
     def get_average_rating(self):
+        """ Получить средний рейтинг комнаты """
         return Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
+
+    def get_regulations_list(self) -> QuerySet:
+        """ Получить список правил для комнаты """
+        return Regulations.objects.filter(type_room=self.type)
+
+    def get_review_list(self) -> QuerySet:
+        """ Получить список отзывов для комнаты """
+        return Review.objects.filter(room=self).order_by('-pub_date').select_related('author')
+
+    def get_full_price(self, days: int) -> int:
+        """ Получить стоимость проживания в комнате за указанное количество дней"""
+        return self.price * days
 
     class Meta:
         verbose_name_plural = 'Комнаты'
@@ -56,7 +69,7 @@ class Room(TimeStampedModel):
 
 
 class Gallery(TimeStampedModel):
-    """ Фотографии комнат"""
+    """ Модель галереи комнат"""
     room = models.OneToOneField(Room, on_delete=models.CASCADE, related_name='photos_of_room',
                                 verbose_name='Комната')
     slider_photo1 = models.ImageField(upload_to=catalog_of_photo_rooms, blank=True, null=True,
@@ -77,7 +90,7 @@ class Gallery(TimeStampedModel):
 
 
 class Reserve(TimeStampedModel):
-    """ Резерв комнаты """
+    """ Модель резерва комнаты """
     client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='client',
                                verbose_name='Клиент')
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=False, verbose_name='Комната')
@@ -91,12 +104,8 @@ class Reserve(TimeStampedModel):
 
     def clean(self):
         if self.day_in > self.day_out:
-            raise ValidationError(
-                {
-                    'day_in': "Дата заезда не может быть позже даты выезда",
-                    'day_out': "Дата выезда не может быть раньше даты заезда",
-                }
-            )
+            raise ValidationError({'day_in': "Дата заезда не может быть позже даты выезда",
+                                   'day_out': "Дата выезда не может быть раньше даты заезда"})
 
     class Meta:
         verbose_name_plural = 'Резервы комнат'
@@ -104,7 +113,7 @@ class Reserve(TimeStampedModel):
 
 
 class Review(TimeStampedModel):
-    """ Отзыв """
+    """ Модель отзыва """
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE, verbose_name='Комната')
     rating = models.IntegerField(blank=True, null=True, verbose_name='Рейтинг')
     body = models.TextField(blank=True, null=True, verbose_name='Отзыв')
@@ -117,11 +126,7 @@ class Review(TimeStampedModel):
 
     def clean(self):
         if 1 > self.rating or self.rating > 5:
-            raise ValidationError(
-                {
-                    'rating': "Рейтинг должен быть в диапазоне от 1 до 5",
-                }
-            )
+            raise ValidationError({'rating': "Рейтинг должен быть в диапазоне от 1 до 5"})
 
     class Meta:
         verbose_name_plural = 'Отзывы комнат'

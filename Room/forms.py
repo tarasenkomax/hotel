@@ -7,12 +7,10 @@ class ReviewForm(forms.ModelForm):
 
     class Meta:
         model = Review
-        fields = ('body',
-                  'rating',)
+        fields = ('body', 'rating')
 
     def clean_body(self):
         body = self.cleaned_data['body']
         if len(body) > 500:
             raise forms.ValidationError("Отзыв не должен превышать 500 символов")
         return body
-
