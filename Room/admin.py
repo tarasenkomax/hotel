@@ -7,6 +7,7 @@ class HotelAdmin(admin.ModelAdmin):
     """ Отели """
     list_display = ('name',)
     list_display_links = ('name',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -14,6 +15,7 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('room', 'reserve', 'author', 'rating', 'body', 'pub_date')
     list_display_links = ('room',)
     list_filter = ('room',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 class GalleryInLine(admin.StackedInline):
@@ -27,6 +29,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display_links = ('number',)
     search_fields = ('number',)
     list_filter = ('number_of_guests', 'type',)
+    readonly_fields = ('created_at', 'updated_at')
 
     inlines = [GalleryInLine]
 
@@ -35,12 +38,14 @@ class TypeRoomAdmin(admin.ModelAdmin):
     """ Типы комнат"""
     list_display = ('code', 'nomination', 'description',)
     list_display_links = ('code', 'nomination',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 class GalleryAdmin(admin.ModelAdmin):
     """ Фотографии комнат """
     list_display = ('room',)
     list_display_links = ('room',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 class ReserveAdmin(admin.ModelAdmin):
@@ -48,8 +53,8 @@ class ReserveAdmin(admin.ModelAdmin):
     list_display = ('id', 'reg_date', 'room', 'client', 'day_in', 'day_out', 'number_of_guests')
     list_display_links = ('id',)
     list_filter = ('room',)
-    readonly_fields = ('reg_date',)
     date_hierarchy = 'reg_date'
+    readonly_fields = ('reg_date', 'created_at', 'updated_at')
 
 
 class RegulationsAdmin(admin.ModelAdmin):
@@ -57,6 +62,7 @@ class RegulationsAdmin(admin.ModelAdmin):
     list_display = ('type_room', 'regulation',)
     list_display_links = ('type_room',)
     list_filter = ('type_room',)
+    readonly_fields = ('created_at', 'updated_at')
 
 
 admin.site.register(Reserve, ReserveAdmin)

@@ -9,6 +9,17 @@ def user_directory_path(instance, filename):
     return 'users/{0}/{1}'.format(instance.email, filename)
 
 
+class TimeStampedModel(models.Model):
+    """
+    Модель абстрактного базового класса для добавления полей "дата создания" и "дата изменения"
+    """
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+
+    class Meta:
+        abstract = True
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         if not email:
@@ -31,7 +42,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class CustomUser(AbstractUser):
+class CustomUser(AbstractUser, TimeStampedModel):
     """ Кастомная модель пользователя """
     username = None
     email = models.EmailField(verbose_name='Почта', max_length=255, unique=True, )

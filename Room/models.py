@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Avg
 
-from Account.models import CustomUser
+from Account.models import CustomUser, TimeStampedModel
 
 
 def catalog_of_photo_rooms(instance, filename):
@@ -10,7 +10,7 @@ def catalog_of_photo_rooms(instance, filename):
     return 'rooms/{0}/{1}'.format(instance.room.number, filename)
 
 
-class Hotel(models.Model):
+class Hotel(TimeStampedModel):
     """ Модель Отеля """
     name = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Название')
 
@@ -22,7 +22,7 @@ class Hotel(models.Model):
         verbose_name = 'Отель'
 
 
-class TypeRoom(models.Model):
+class TypeRoom(TimeStampedModel):
     """ Модель типа комнаты """
     code = models.SmallIntegerField(primary_key=True, verbose_name='Код')
     nomination = models.CharField(max_length=50, blank=True, unique=True, null=False, verbose_name='Наименование')
@@ -36,7 +36,7 @@ class TypeRoom(models.Model):
         verbose_name = 'Тип комнаты'
 
 
-class Room(models.Model):
+class Room(TimeStampedModel):
     """ Модель Комнаты """
     hotel = models.ForeignKey(Hotel, null=False, on_delete=models.CASCADE, verbose_name='Отель')
     number = models.IntegerField(null=False, unique=True, verbose_name='Номер')
@@ -55,7 +55,7 @@ class Room(models.Model):
         verbose_name = 'Комната'
 
 
-class Gallery(models.Model):
+class Gallery(TimeStampedModel):
     """ Фотографии комнат"""
     room = models.OneToOneField(Room, on_delete=models.CASCADE, related_name='photos_of_room',
                                 verbose_name='Комната')
@@ -76,7 +76,7 @@ class Gallery(models.Model):
         verbose_name = 'Галерея комнаты'
 
 
-class Reserve(models.Model):
+class Reserve(TimeStampedModel):
     """ Резерв комнаты """
     client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='client',
                                verbose_name='Клиент')
@@ -103,7 +103,7 @@ class Reserve(models.Model):
         verbose_name = 'Резерв комнаты'
 
 
-class Review(models.Model):
+class Review(TimeStampedModel):
     """ Отзыв """
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE, verbose_name='Комната')
     rating = models.IntegerField(blank=True, null=True, verbose_name='Рейтинг')
@@ -128,7 +128,7 @@ class Review(models.Model):
         verbose_name = 'Отзыв комнаты'
 
 
-class Regulations(models.Model):
+class Regulations(TimeStampedModel):
     """ Правила коматы """
     type_room = models.ForeignKey(TypeRoom, null=True, on_delete=models.CASCADE, verbose_name='Тип комнаты')
     regulation = models.TextField(blank=True, null=True, verbose_name='Правило')
