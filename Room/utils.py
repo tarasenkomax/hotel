@@ -1,4 +1,5 @@
 import datetime
+import re
 from typing import Union
 
 from django.contrib.auth.models import User
@@ -9,8 +10,11 @@ from settings import config
 
 
 def convert_str_to_date(date_str: Union[datetime.date, str]) -> datetime.date:
-    """ Конвертировать строку 'ГГГГ-ММ-ДД' в datetime.date """
-    return datetime.datetime.strptime(date_str, '%Y-%m-%d').date() if isinstance(date_str, str) else date_str
+    """ Конвертировать строку 'ГГГГ-ММ-ДД' или 'ДД.ММ.ГГГГ' в datetime.date """
+    if re.search(r"(\d{4}-\d{1,2}-\d{1,2})", date_str):
+        return datetime.datetime.strptime(date_str, '%Y-%m-%d').date() if isinstance(date_str, str) else date_str
+    elif re.search(r"(\d{1,2}.\d{1,2}.\d{4})", date_str):
+        return datetime.datetime.strptime(date_str, '%d.%m.%Y').date() if isinstance(date_str, str) else date_str
 
 
 def check_availability(room: Room, day_in: datetime.date, day_out: datetime.date) -> bool:

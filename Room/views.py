@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
@@ -9,6 +9,8 @@ from Room.forms import ReviewForm
 from Room.models import Room, Reserve
 from Room import utils
 import datetime
+
+from Room.utils import check_dates_of_user
 
 
 class AllRooms(ListView):
@@ -147,7 +149,7 @@ class ListFreeRooms(ListView, LoginRequiredMixin):
 
     def get_queryset(self):
         free_rooms_list = Room.objects.select_related('type').filter(
-            number_of_guests__gte=int(self.request.GET['number_of_guests']))
+            number_of_guests__gte=int(self.request.GET['number_of_guests'][0]))
         free_rooms_number_list = []
         for room in free_rooms_list:
             if utils.check_availability(room, utils.convert_str_to_date(self.request.GET['day_in']),

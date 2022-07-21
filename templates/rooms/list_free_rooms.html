@@ -113,7 +113,6 @@
 <main class="main">
     <div class="search-page container">
         <form class="search-filter" action="#" method="get">
-            {% csrf_token %}
             <div class="landing-card__twin-datepick">
                 <div class="twin-datepick js-twin-datepick">
                     <div class="twin-datepick__item">
@@ -184,30 +183,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="search-filter__range-group">
-                    <div class="search-filter__range">
-                        <div class="range-slider">
-                            <div
-                                    class="js-multislider-v43"
-                                    data-description="Диапазон цены"
-                                    data-min-value="0"
-                                    data-max-value="15000"
-                                    data-value1="5000"
-                                    data-value2="10000"
-                                    data-step="100"
-                                    data-slider-type="double"
-                            ></div>
-                        </div>
-                    </div>
-                    <p class="search-filter__description">
-                        Стоимость за сутки пребывания в номере
-                    </p>
-                </div>
                 <div class="search-filter__group">
                     <div class="search-filter__btnn">
                         <button
                                 class="button button_ghostly button_high button_wide"
-                                type="button"
+                                type="submit"
                         >
                             <div class="button__content">Применить</div>
                         </button>
