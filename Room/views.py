@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
@@ -9,8 +9,6 @@ from Room.forms import ReviewForm
 from Room.models import Room, Reserve
 from Room import utils
 import datetime
-
-from Room.utils import check_dates_of_user
 
 
 class AllRooms(ListView):

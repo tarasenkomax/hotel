@@ -56,8 +56,8 @@ class Room(TimeStampedModel):
 
     def get_average_rating(self) -> Union[Decimal, None]:
         """ Получить средний рейтинг комнаты """
-        reviews = Review.objects.filter(room_id=self.id).aggregate(Avg('rating'))['rating__avg']
-        return Decimal(reviews).quantize(Decimal("1.0")) if reviews else None
+        reviews = Review.objects.filter(room__number=self.number).aggregate(Avg('rating'))['rating__avg']
+        return Decimal(reviews).quantize(Decimal("1.0")) if reviews else 5.0
 
     def get_regulations_list(self) -> QuerySet:
         """ Получить список правил для комнаты """
@@ -108,7 +108,7 @@ class Reserve(TimeStampedModel):
     reg_date = models.DateField(auto_now_add=True, null=True, verbose_name='Дата регистрации резерва', )
 
     def __str__(self):
-        return str(self.id)
+        return f"{self.client.email} : {self.day_in} - {self.day_out}"
 
     def clean(self):
         if self.day_in > self.day_out:
@@ -126,11 +126,11 @@ class Review(TimeStampedModel):
     rating = models.IntegerField(blank=True, null=True, verbose_name='Рейтинг')
     body = models.TextField(blank=True, null=True, verbose_name='Отзыв')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, verbose_name='Автор')
-    reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE, null=True, verbose_name='Резерв ID')
+    reserve = models.OneToOneField(Reserve, on_delete=models.CASCADE, null=True, verbose_name='Резерв')
     pub_date = models.DateField(auto_now_add=True, null=True, verbose_name='Дата публикации', )
 
     def __str__(self):
-        return str(self.room)
+        return f"{self.author.email} : {self.rating}"
 
     def clean(self):
         if 1 > self.rating or self.rating > 5:

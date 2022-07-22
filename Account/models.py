@@ -51,7 +51,7 @@ class CustomUser(AbstractUser, TimeStampedModel):
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
 
     def __str__(self):
-        return '{0} {1}'.format(self.last_name, self.first_name)
+        return f'{self.last_name} {self.first_name}'
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
