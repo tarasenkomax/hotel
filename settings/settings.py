@@ -94,7 +94,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'settings.custom_password_validation.MinimumLengthValidator'},
     {'NAME': 'settings.custom_password_validation.NumericPasswordValidator'},
     {'NAME': 'settings.custom_password_validation.MaximumLengthValidator'},
-    {'NAME': 'settings.custom_password_validation.SpecialCharactersPasswordValidator'}
+    {'NAME': 'settings.custom_password_validation.SpecialCharactersPasswordValidator'},
+    {'NAME': 'settings.custom_password_validation.LetterPasswordValidator'},
+    {'NAME': 'settings.custom_password_validation.RegisterPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'ru'

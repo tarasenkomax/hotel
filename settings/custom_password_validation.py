@@ -45,11 +45,31 @@ class MaximumLengthValidator:
 
 
 class NumericPasswordValidator:
-    """ Проверка в пароле наличия цифр и букв (верхнего и нижнего регистра) """
+    """ Проверка в пароле наличия цифр  """
 
     def validate(self, password, user=None):
         if password.isdigit():
-            raise ValidationError(_("Этот пароль полностью числовой."), code='password_entirely_numeric', )
+            raise ValidationError(_("Этот пароль полностью числовой."), code='password_entirely_numeric')
+
+    def get_help_text(self):
+        return _('')
+
+
+class LetterPasswordValidator:
+    """ Проверка в пароле наличия букв (верхнего и нижнего регистра) """
+
+    def validate(self, password, user=None):
+        if password.isalpha():
+            raise ValidationError(_("Этот пароль полностью буквенный."), code='password_entirely_numeric')
+
+    def get_help_text(self):
+        return _('')
+
+
+class RegisterPasswordValidator:
+    """ Проверка в пароле регистра букв"""
+
+    def validate(self, password, user=None):
         if not re.search(r'\w[a-z]', password):
             raise ValidationError(_("Пароль  должен содержать хотя бы одну маленькую букву"), code='only_big_register')
         if not re.search(r'\w[A-Z]', password):

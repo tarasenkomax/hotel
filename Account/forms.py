@@ -39,7 +39,7 @@ class CustomUserCreationForm(RegistrationForm, CleanNameUserMixin):
     class Meta(RegistrationForm.Meta):
         model = CustomUser
         fields = ('email', 'last_name', 'first_name', 'date_of_birth')
-        error_messages = {'password_mismatch': _('Пароли не совпадают'), }
+        error_messages = {'password_mismatch': _('Введенные пароли не совпадают.'), }
 
     password1 = forms.CharField(
         label=_("Password"),
@@ -60,10 +60,16 @@ class UserSettingsForm(forms.ModelForm, CleanNameUserMixin):
         model = CustomUser
         fields = ('last_name', 'first_name', 'date_of_birth', 'phone', 'photo')
 
+    def clean_phone(self):
+        phone = self.cleaned_data['phone']
+        if re.search(r'[a-zA-Zа-яА-ЯёЁ]', phone):
+            raise forms.ValidationError("Телефон не должен содержать букв")
+        return phone
+
 
 class AuthenticationUserForm(AuthenticationForm):
     """ Форма авторизации пользователя """
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}))
 
-    error_messages = {'invalid_login': _("Не нашлось совпадений логина и пароля"),
+    error_messages = {'invalid_login': _("Не нашлось совпадений почты и пароля"),
                       'inactive': _("Этот аккаунт не активен.")}
