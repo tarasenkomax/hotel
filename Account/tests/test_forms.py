@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from Account.forms import CustomUserCreationForm, AuthenticationUserForm, UserSettingsForm
@@ -332,6 +333,17 @@ class UserSettingsFormTest(TestCase):
 
 class AuthenticationUserFormTest(TestCase):
     """ Тестирование формы авторизации пользователя """
+
+    def test_user_exist_form(self):
+        """
+        Вводим данные для входа
+        Проверяем невалидность формы
+        Проверяем сообщение об ошибке
+        """
+        user = get_user_model().objects.create_user(email='test@test.ru', password='Some_password123')
+        form_data = {'username': 'test@test.ru', 'password': 'Some_password123', }
+        form = AuthenticationUserForm(data=form_data)
+        self.assertTrue(form.is_valid())
 
     def test_user_not_exist_form(self):
         """

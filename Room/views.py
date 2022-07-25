@@ -1,9 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, TemplateView
 
 from Room.forms import ReviewForm
 from Room.models import Room, Reserve
@@ -89,7 +88,6 @@ class ReserveRoom(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['regulations_list'] = self.get_object().get_regulations_list()
         context['review_list'] = self.get_object().get_review_list()
-
         context['num_of_review'] = len(context['review_list'])
         context['day_in'] = self.request.GET['day_in']
         context['day_out'] = self.request.GET['day_out']
@@ -107,7 +105,7 @@ class Cancel(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('all_reserves')
 
     def get_object(self, queryset=None):
-        reserve = Reserve.objects.select_related('client').get(pk=self.kwargs.get("pk"))
+        reserve = get_object_or_404(Reserve, pk=self.kwargs['pk'])
         if not reserve.client == self.request.user:
             raise Http404
         return reserve
@@ -135,11 +133,11 @@ class Cancel(LoginRequiredMixin, DeleteView):
                 context['delay'] = False
         cost = self.get_object().room.price * context['days']
         context[
-            'message'] = f"Вам вернется стоимость за {context['days']} дней с {self.get_object().day_in} по {self.get_object().day_out} в размере {cost} рублей. "
+            'message'] = f"Вам вернется стоимость за {context['days']} дней с {self.get_object().day_in} по {self.get_object().day_out} в размере {cost} рублей."
         return context
 
 
-class ListFreeRooms(ListView, LoginRequiredMixin):
+class ListFreeRooms(LoginRequiredMixin, ListView):
     """ Список свободных номеров """
     context_object_name = 'rooms'
     template_name = "rooms/list_free_rooms.html"
@@ -166,8 +164,9 @@ class ListFreeRooms(ListView, LoginRequiredMixin):
         return context
 
 
-class Pay(LoginRequiredMixin, View):
-    """ Оплата брони (заглушка)"""
+class Pay(LoginRequiredMixin, TemplateView):
+    """ Оплата с уведомлением об оплате брони """
+    template_name = "rooms/pay.html"
 
     def get(self, request, *args, **kwargs):
         if utils.check_dates_of_user(request.user, utils.convert_str_to_date(request.GET['day_in']),
@@ -176,12 +175,14 @@ class Pay(LoginRequiredMixin, View):
                               room=get_object_or_404(Room, number=self.kwargs.get("number")),
                               number_of_guests=request.GET['number_of_guests'], client=request.user)
             reserve.save()
-            message = """ 
-            Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. 
-            Так же информацию о брони вы можете посмотреть в разделе "Мои резервы". 
-            """
             utils.send_reserve_email(request.user.first_name, reserve.room, reserve.day_in, reserve.day_out,
                                      reserve.number_of_guests, request.user.email)
-        else:
-            message = "Ошибка оплаты."
-        return render(request, 'rooms/pay.html', {'message': message, })
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['message'] = """ 
+                    Номер успешно забронирован. Детали бронирования были отправлены вам на электронную почту. 
+                    Так же информацию о брони вы можете посмотреть в разделе "Мои резервы". 
+                    """
+        return context
