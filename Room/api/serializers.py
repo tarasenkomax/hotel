@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from Room.models import Room, Gallery, Regulations, Review
+from Room.models import Room, Gallery, Regulations, Review, Reserve
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -40,3 +40,10 @@ class AllRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['number', 'hotel', 'type', 'price', 'number_of_guests', 'average_rating', 'gallery']
+
+
+class AllReservesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Reserve
+        fields = ['id', 'room', 'day_in', 'day_out', 'number_of_guests', 'review']
