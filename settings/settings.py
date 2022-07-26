@@ -45,7 +45,9 @@ INSTALLED_APPS = [
     # 3rd
     'storages',
     'django_cleanup.apps.CleanupConfig',
-    'django_registration'
+    'django_registration',
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

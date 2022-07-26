@@ -45,7 +45,9 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser, TimeStampedModel):
     """ Кастомная модель пользователя """
     username = None
-    email = models.EmailField(verbose_name='Почта', max_length=255, unique=True, )
+    email = models.EmailField(verbose_name='Почта', max_length=255, unique=True)
+    last_name = models.CharField(max_length=30, null=False, verbose_name='Фамилия')
+    first_name = models.CharField(max_length=30, null=False, verbose_name='Имя')
     phone = models.CharField(max_length=22, blank=True, null=True, verbose_name='Телефон')
     date_of_birth = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     photo = models.ImageField(upload_to=user_directory_path, blank=True, null=True, verbose_name='Фото')
