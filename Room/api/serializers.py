@@ -21,7 +21,7 @@ class RegulationSerializer(serializers.ModelSerializer):
         fields = ['id', 'regulation']
 
 
-class RoomSerializer(serializers.ModelSerializer):
+class RoomDetailSerializer(serializers.ModelSerializer):
     gallery = GallerySerializer(source="photos_of_room")
     regulations = RegulationSerializer(many=True, source="get_regulations_list")
     reviews = ReviewSerializer(many=True, source='get_review_list')
@@ -31,3 +31,12 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = ['number', 'hotel', 'type', 'price', 'number_of_guests', 'average_rating', 'gallery', 'regulations',
                   'reviews']
+
+
+class AllRoomSerializer(serializers.ModelSerializer):
+    gallery = GallerySerializer(source="photos_of_room")
+    average_rating = serializers.ReadOnlyField(source='get_average_rating')
+
+    class Meta:
+        model = Room
+        fields = ['number', 'hotel', 'type', 'price', 'number_of_guests', 'average_rating', 'gallery']
