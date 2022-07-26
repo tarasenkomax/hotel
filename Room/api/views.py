@@ -2,9 +2,10 @@ from django.http import Http404
 from rest_framework import generics, response, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from Room.api.serializers import AllRoomSerializer, RoomDetailSerializer, AllReservesSerializer
-from Room.models import Room, Reserve
+from Room.api.serializers import AllRoomSerializer, RoomDetailSerializer, AllReservesSerializer, AddReviewSerializer
+from Room.models import Room, Reserve, Review
 from Room.utils import calculate_refund_amount
 
 
@@ -64,4 +65,26 @@ class CancelView(generics.RetrieveDestroyAPIView):
                 'message': f"""Вам вернется стоимость за {cancel_data['days']} дней с {self.get_object().day_in} по {self.get_object().day_out} в размере {cancel_data['cost']} рублей."""})
 
 
+class AddReviewView(generics.CreateAPIView):
+    """
+    Добавление отзыва (POST)
+    """
+    serializer_class = AddReviewSerializer
 
+    def get_object(self):
+        reserve = get_object_or_404(Reserve, pk=self.kwargs["pk"])
+        if not reserve.client == self.request.user:
+            raise Http404
+        if len(Review.objects.filter(reserve=reserve)) > 0:
+            raise Http404
+        return reserve
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        Review.objects.create(room=self.get_object().room,
+                              rating=serializer.data['rating'],
+                              body=serializer.data['body'],
+                              author=self.request.user,
+                              reserve=self.get_object())
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

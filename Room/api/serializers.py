@@ -43,7 +43,24 @@ class AllRoomSerializer(serializers.ModelSerializer):
 
 
 class AllReservesSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Reserve
         fields = ['id', 'room', 'day_in', 'day_out', 'number_of_guests', 'review']
+
+
+class AddReviewSerializer(serializers.ModelSerializer):
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    body = serializers.CharField()
+
+    class Meta:
+        model = Review
+        fields = ['rating', 'body']
+
+    def validate(self, data):
+        rating = data.get('rating')
+        body = data.get('body')
+        if not rating:
+            raise serializers.ValidationError(detail={'rating': 'Пустое поле'})
+        if not body:
+            raise serializers.ValidationError(detail={'body': 'Пустое поле'})
+        return data

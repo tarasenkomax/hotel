@@ -1,6 +1,6 @@
 from django.urls import path
 
-from Room.api.views import AllRoomsView, DetailRoomView, AllReservesView, CancelView
+from Room.api.views import AllRoomsView, DetailRoomView, AllReservesView, CancelView, AddReviewView
 
 urlpatterns = [
     path('all_rooms', AllRoomsView.as_view(), name='api_all_rooms'),
@@ -10,5 +10,5 @@ urlpatterns = [
     # path('reserve_room/<int:number>', ReserveRoom.as_view(), name='reserve_room'),
     path('cancel/<int:pk>', CancelView.as_view(), name='api_cancel'),
     # path('pay/<int:number>', Pay.as_view(), name='pay'),
-    # path('add_review/<int:pk>', AddReview.as_view(), name='add_review'),
+    path('add_review/<int:pk>', AddReviewView.as_view(), name='api_add_review'),
 ]
