@@ -72,3 +72,22 @@ def send_cancel_email(recipient):
     С уважением, Администрация отеля.
     """
     send_mail(email_theme, email_text, config.EMAIL_HOST_USER, [str(recipient)], fail_silently=False)
+
+
+def calculate_refund_amount(reserve: Reserve) -> dict:
+    """ Расчитать сумму возврата при отмене бронировния """
+    if datetime.datetime.now().date() < reserve.day_in:
+        days = get_number_of_days(reserve.day_in, reserve.day_out)
+        delay = False
+    elif datetime.datetime.now().date() == reserve.day_in:
+        days = get_number_of_days(reserve.day_in, reserve.day_out) - 1
+        delay = False
+    else:
+        if datetime.datetime.now().date() > reserve.day_out:
+            days = 0
+            delay = True
+        else:
+            days = get_number_of_days(datetime.datetime.now().date(), reserve.day_out)
+            delay = False
+    cost = reserve.room.price * days
+    return {'days': days, 'delay': delay, 'cost': cost}

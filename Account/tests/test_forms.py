@@ -20,7 +20,7 @@ class CustomUserCreationFormTest(TestCase):
         Вводим правильные данные
         Проверяем валидность формы
         """
-        form_data = {'email': 'test@test.ru', 'last_name': '', 'first_name': 'Иван',
+        form_data = {'email': 'test@test.ru', 'last_name': 'Иванов', 'first_name': 'Иван',
                      'date_of_birth': '1995-09-12', 'password1': self.good_pass, 'password2': self.good_pass}
         form = CustomUserCreationForm(data=form_data)
         self.assertTrue(form.is_valid())
