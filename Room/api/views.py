@@ -4,6 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from Room import utils
 from Room.api.serializers import AllRoomSerializer, RoomDetailSerializer, AllReservesSerializer, AddReviewSerializer
 from Room.models import Room, Reserve, Review
 from Room.utils import calculate_refund_amount
@@ -88,3 +89,29 @@ class AddReviewView(generics.CreateAPIView):
                               author=self.request.user,
                               reserve=self.get_object())
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ListFreeRoomsView(generics.ListAPIView):
+    serializer_class = AllRoomSerializer
+
+    def get_queryset(self):
+        free_rooms_list = Room.objects.select_related('type').filter(
+            number_of_guests__gte=int(self.request.GET['number_of_guests'][0]))
+        free_rooms_number_list = []
+        for room in free_rooms_list:
+            if utils.check_availability(room, utils.convert_str_to_date(self.request.GET['day_in']),
+                                        utils.convert_str_to_date(self.request.GET['day_out'])):
+                free_rooms_number_list.append(room.number)
+        if utils.check_dates_of_user(self.request.user,
+                                     utils.convert_str_to_date(self.request.GET['day_in']),
+                                     utils.convert_str_to_date(self.request.GET['day_out'])):
+            return Room.objects.select_related('type').filter(number__in=free_rooms_number_list).order_by('number')
+
+    def get(self, request, *args, **kwargs):
+        if 'day_in' not in request.GET:
+            return response.Response(data={'day_in': 'Пустое поле'})
+        if 'day_out' not in request.GET:
+            return response.Response(data={'day_out': 'Пустое поле'})
+        if 'number_of_guests' not in request.GET:
+            return response.Response(data={'number_of_guests': 'Пустое поле'})
+        return super().get(request, *args, **kwargs)
